@@ -6,16 +6,31 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from .forms import ClientForm
+from django.db.models import Q
+
 
 
 class ClientListViews(LoginRequiredMixin, ListView):
     model = Client
     template_name = 'clients/client_list.html'
+    context_object_name = 'clients'
     paginate_by = 10
 
     def get_queryset(self):
-        return Client.objects.filter(utilisateur=self.request.user)
+        qs = Client.objects.all()
+        q = self.request.GET.get('q', '').strip()
+        if q:
+            qs = qs.filter(
+                Q(nom__icontains=q) |
+                Q(email__icontains=q)
+            )
+        return qs.order_by('-date_creation')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')
+        return context
+
 
 class ClientDetailViews(LoginRequiredMixin, DetailView):
     model = Client
@@ -24,17 +39,19 @@ class ClientDetailViews(LoginRequiredMixin, DetailView):
 
 class ClientCreateViews(LoginRequiredMixin, CreateView):
     model = Client
-    fields = ['nom', 'prenom', 'email', 'telephone', 'adresse', 'ville', 'code_postal', 'pays']
+    fields = ['nom', 'email', 'telephone', 'adresse']
     template_name = 'clients/client_form.html'
-    
+    success_url = reverse_lazy('clients:client_list')
+
     def form_valid(self, form):
         form.instance.utilisateur = self.request.user
         return super().form_valid(form)
 
 class ClientUpdateViews(LoginRequiredMixin, UpdateView):
     model = Client
-    fields = ['nom', 'prenom', 'email', 'telephone', 'adresse', 'ville', 'code_postal', 'pays']
+    fields = ['nom', 'email', 'telephone', 'adresse']
     template_name = 'clients/client_form.html'
+    success_url = reverse_lazy('clients:client_list')
 
 
 class ClientDeleteViews(LoginRequiredMixin, DeleteView):

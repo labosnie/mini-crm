@@ -12,6 +12,18 @@
   <div class="alert alert-{{ message.tags }}">{{ message }}</div>
   {% endfor %} {% endif %}
 
+  <!-- Barre de recherche -->
+  <form method="get" class="d-flex mb-3">
+    <input
+      type="text"
+      name="q"
+      value="{{ request.GET.q }}"
+      class="form-control me-2"
+      placeholder="Rechercher par nom ou email..."
+    />
+    <button class="btn btn-outline-primary" type="submit">Rechercher</button>
+  </form>
+
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>
@@ -25,7 +37,11 @@
       <tbody>
         {% for client in clients %}
         <tr>
-          <td>{{ client.nom }}</td>
+          <td>
+            <a href="{% url 'clients:client_detail' client.pk %}"
+              >{{ client.nom }}</a
+            >
+          </td>
           <td>{{ client.email }}</td>
           <td>{{ client.telephone }}</td>
           <td>
@@ -57,5 +73,51 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Pagination -->
+  {% if is_paginated %}
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+      {# Lien précédent #} {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}"
+        >
+          « Précédent
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">« Précédent</span>
+      </li>
+      {% endif %} {# Numéros de pages #} {% for num in paginator.page_range %}
+      {% if num == page_obj.number %}
+      <li class="page-item active">
+        <span class="page-link">{{ num }}</span>
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ request.GET.q }}&page={{ num }}">
+          {{ num }}
+        </a>
+      </li>
+      {% endif %} {% endfor %} {# Lien suivant #} {% if page_obj.has_next %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}"
+        >
+          Suivant »
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Suivant »</span>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
 </div>
 {% endblock %}
