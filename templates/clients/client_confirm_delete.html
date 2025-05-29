@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% block title %}Supprimer le client - {{ client.nom
+}}{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">Confirmation de suppression</h2>
+    </div>
+    <div class="card-body">
+      <p class="lead">
+        Êtes-vous sûr de vouloir supprimer le client
+        <strong>{{ client.nom }}</strong> ?
+      </p>
+      <p class="text-danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        Cette action est irréversible.
+      </p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mt-4">
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Confirmer la suppression
+          </button>
+          <a href="{% url 'clients:client_list' %}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Annuler
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

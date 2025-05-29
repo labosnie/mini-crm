@@ -1,0 +1,71 @@
+{% extends 'base.html' %} {% block title %}Liste des Projets{% endblock %} {%
+block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Liste des Projets</h1>
+    <a href="{% url 'projets:projet_create' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Nouveau Projet
+    </a>
+  </div>
+
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %} {% endif %}
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Client</th>
+          <th>Date de début</th>
+          <th>Statut</th>
+          <th>Montant</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for projet in projets %}
+        <tr>
+          <td>{{ projet.titre }}</td>
+          <td>{{ projet.client.nom }}</td>
+          <td>{{ projet.date_debut|date:"d/m/Y" }}</td>
+          <td>
+            <span
+              class="badge {% if projet.statut == 'en_cours' %}bg-primary {% elif projet.statut == 'termine' %}bg-success {% elif projet.statut == 'en_attente' %}bg-warning {% else %}bg-danger{% endif %}"
+            >
+              {{ projet.get_statut_display }}
+            </span>
+          </td>
+          <td>{{ projet.montant|default:"-" }} €</td>
+          <td>
+            <a
+              href="{% url 'projets:projet_detail' projet.pk %}"
+              class="btn btn-info btn-sm"
+            >
+              <i class="fas fa-eye"></i>
+            </a>
+            <a
+              href="{% url 'projets:projet_update' projet.pk %}"
+              class="btn btn-warning btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+            </a>
+            <a
+              href="{% url 'projets:projet_delete' projet.pk %}"
+              class="btn btn-danger btn-sm"
+            >
+              <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center">Aucun projet trouvé.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

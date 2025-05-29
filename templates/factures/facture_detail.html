@@ -1,0 +1,85 @@
+{% extends 'base.html' %} {% block title %}Détails de la Facture - {{
+facture.numero }}{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Détails de la Facture</h2>
+      <div>
+        <a
+          href="{% url 'factures:facture_update' facture.pk %}"
+          class="btn btn-warning"
+        >
+          <i class="fas fa-edit"></i> Modifier
+        </a>
+        <a
+          href="{% url 'factures:facture_delete' facture.pk %}"
+          class="btn btn-danger"
+        >
+          <i class="fas fa-trash"></i> Supprimer
+        </a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Informations Générales</h3>
+          <table class="table">
+            <tr>
+              <th>Numéro</th>
+              <td>{{ facture.numero }}</td>
+            </tr>
+            <tr>
+              <th>Client</th>
+              <td>{{ facture.client.nom }}</td>
+            </tr>
+            <tr>
+              <th>Projet</th>
+              <td>{{ facture.projet.titre }}</td>
+            </tr>
+            <tr>
+              <th>Montant</th>
+              <td>{{ facture.montant }} €</td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <h3>Statut et Dates</h3>
+          <table class="table">
+            <tr>
+              <th>Statut</th>
+              <td>
+                <span
+                  class="badge {% if facture.statut_paiement == 'payée' %}bg-success {% elif facture.statut_paiement == 'en_retard' %}bg-danger {% else %}bg-warning{% endif %}"
+                >
+                  {{ facture.get_statut_paiement_display }}
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>Date d'émission</th>
+              <td>{{ facture.date_emission|date:"d/m/Y H:i" }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      {% if facture.notes %}
+      <div class="row mt-4">
+        <div class="col-12">
+          <h3>Notes</h3>
+          <div class="card">
+            <div class="card-body">{{ facture.notes|linebreaks }}</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="{% url 'factures:facture_list' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+  </div>
+</div>
+{% endblock %}

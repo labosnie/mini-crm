@@ -1,0 +1,95 @@
+{% extends 'base.html' %} {% block title %} {% if client %}Modifier{% else
+%}Nouveau{% endif %} Client {% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">
+        {% if client %} Modifier le client {% else %} Nouveau client {% endif %}
+      </h2>
+    </div>
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %} {% if form.errors %}
+        <div class="alert alert-danger">
+          Veuillez corriger les erreurs ci-dessous.
+        </div>
+        {% endif %}
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="id_nom" class="form-label">Nom</label>
+              <input
+                type="text"
+                class="form-control {% if form.nom.errors %}is-invalid{% endif %}"
+                id="id_nom"
+                name="nom"
+                value="{{ form.nom.value|default:'' }}"
+                required
+              />
+              {% if form.nom.errors %}
+              <div class="invalid-feedback">{{ form.nom.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                id="id_email"
+                name="email"
+                value="{{ form.email.value|default:'' }}"
+                required
+              />
+              {% if form.email.errors %}
+              <div class="invalid-feedback">{{ form.email.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="id_telephone" class="form-label">Téléphone</label>
+              <input
+                type="tel"
+                class="form-control {% if form.telephone.errors %}is-invalid{% endif %}"
+                id="id_telephone"
+                name="telephone"
+                value="{{ form.telephone.value|default:'' }}"
+              />
+              {% if form.telephone.errors %}
+              <div class="invalid-feedback">{{ form.telephone.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_adresse" class="form-label">Adresse</label>
+              <textarea
+                class="form-control {% if form.adresse.errors %}is-invalid{% endif %}"
+                id="id_adresse"
+                name="adresse"
+                rows="3"
+              >
+{{ form.adresse.value|default:'' }}</textarea
+              >
+              {% if form.adresse.errors %}
+              <div class="invalid-feedback">{{ form.adresse.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Enregistrer
+          </button>
+          <a href="{% url 'clients:client_list' %}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Annuler
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

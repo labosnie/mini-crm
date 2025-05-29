@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% block title %}Liste des Factures{% endblock %}
+{%block content %}
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Liste des Factures</h1>
+    <a href="{% url 'factures:facture_create' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Nouvelle Facture
+    </a>
+  </div>
+
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %} {% endif %}
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Numéro</th>
+          <th>Client</th>
+          <th>Projet</th>
+          <th>Montant</th>
+          <th>Date d'émission</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for facture in factures %}
+        <tr>
+          <td>{{ facture.numero }}</td>
+          <td>{{ facture.client.nom }}</td>
+          <td>{{ facture.projet.titre }}</td>
+          <td>{{ facture.montant }} €</td>
+          <td>{{ facture.date_emission|date:"d/m/Y" }}</td>
+          <td>
+            <span
+              class="badge {% if facture.statut_paiement == 'payée' %}bg-success{% elif facture.statut_paiement == 'en_retard' %}bg-danger{% else %}bg-warning{% endif %}"
+            >
+              {{ facture.get_statut_paiement_display }}
+            </span>
+          </td>
+          <td>
+            <a
+              href="{% url 'factures:facture_detail' facture.pk %}"
+              class="btn btn-info btn-sm"
+            >
+              <i class="fas fa-eye"></i>
+            </a>
+            <a
+              href="{% url 'factures:facture_update' facture.pk %}"
+              class="btn btn-warning btn-sm"
+            >
+              <i class="fas fa-edit"></i>
+            </a>
+            <a
+              href="{% url 'factures:facture_delete' facture.pk %}"
+              class="btn btn-danger btn-sm"
+            >
+              <i class="fas fa-trash"></i>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center">Aucune facture trouvée.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

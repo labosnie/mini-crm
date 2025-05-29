@@ -1,0 +1,91 @@
+{% extends 'base.html' %} {% block title %}Détails du Projet - {{ projet.titre
+}}{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Détails du Projet</h2>
+      <div>
+        <a
+          href="{% url 'projets:projet_update' projet.pk %}"
+          class="btn btn-warning"
+        >
+          <i class="fas fa-edit"></i> Modifier
+        </a>
+        <a
+          href="{% url 'projets:projet_delete' projet.pk %}"
+          class="btn btn-danger"
+        >
+          <i class="fas fa-trash"></i> Supprimer
+        </a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Informations Générales</h3>
+          <table class="table">
+            <tr>
+              <th>Titre</th>
+              <td>{{ projet.titre }}</td>
+            </tr>
+            <tr>
+              <th>Client</th>
+              <td>{{ projet.client.nom }}</td>
+            </tr>
+            <tr>
+              <th>Statut</th>
+              <td>
+                <span
+                  class="badge {% if projet.statut == 'en_cours' %}bg-primary {% elif projet.statut == 'termine' %}bg-success {% elif projet.statut == 'en_attente' %}bg-warning {% else %}bg-danger{% endif %}"
+                >
+                  {{ projet.get_statut_display }}
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th>Montant</th>
+              <td>{{ projet.montant|default:"Non défini" }} €</td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <h3>Dates</h3>
+          <table class="table">
+            <tr>
+              <th>Date de début</th>
+              <td>{{ projet.date_debut|date:"d/m/Y" }}</td>
+            </tr>
+            <tr>
+              <th>Date de fin</th>
+              <td>{{ projet.date_fin|date:"d/m/Y"|default:"Non définie" }}</td>
+            </tr>
+            <tr>
+              <th>Date de création</th>
+              <td>{{ projet.date_creation|date:"d/m/Y H:i" }}</td>
+            </tr>
+            <tr>
+              <th>Dernière modification</th>
+              <td>{{ projet.date_modification|date:"d/m/Y H:i" }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          <h3>Description</h3>
+          <div class="card">
+            <div class="card-body">{{ projet.description|linebreaks }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="{% url 'projets:projet_list' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+  </div>
+</div>
+{% endblock %}

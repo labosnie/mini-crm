@@ -1,0 +1,33 @@
+{% extends 'base.html' %} {% block title %}Supprimer le projet - {{ projet.titre
+}}{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">Confirmation de suppression</h2>
+    </div>
+    <div class="card-body">
+      <p class="lead">
+        Êtes-vous sûr de vouloir supprimer le projet
+        <strong>{{ projet.titre }}</strong> ?
+      </p>
+      <p class="text-danger">
+        <i class="fas fa-exclamation-triangle"></i>
+        Cette action est irréversible et supprimera également toutes les
+        factures associées à ce projet.
+      </p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mt-4">
+          <button type="submit" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Confirmer la suppression
+          </button>
+          <a href="{% url 'projets:projet_list' %}" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Annuler
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

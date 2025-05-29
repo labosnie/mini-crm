@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if facture %}Modifier{% else %}Nouvelle{% endif %} Facture
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const clientSelect = document.getElementById('id_client');
+        const projetSelect = document.getElementById('id_projet');
+
+        function updateProjets() {
+            const clientId = clientSelect.value;
+            if (clientId) {
+                fetch(`/factures/get-projets-client/?client_id=${clientId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        projetSelect.innerHTML = '<option value="">Sélectionnez un projet</option>';
+                        data.forEach(projet => {
+                            const option = document.createElement('option');
+                            option.value = projet.id;
+                            option.textContent = projet.titre;
+                            projetSelect.appendChild(option);
+                        });
+                    });
+            } else {
+                projetSelect.innerHTML = '<option value="">Sélectionnez d\'abord un client</option>';
+            }
+        }
+
+        clientSelect.addEventListener('change', updateProjets);
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="mb-0">
+                {% if facture %}
+                    Modifier la facture
+                {% else %}
+                    Nouvelle facture
+                {% endif %}
+            </h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Veuillez corriger les erreurs ci-dessous.
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_numero" class="form-label">Numéro</label>
+                            <input type="text" class="form-control {% if form.numero.errors %}is-invalid{% endif %}" 
+                                   id="id_numero" name="numero" value="{{ form.numero.value|default:'' }}" required>
+                            {% if form.numero.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.numero.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_client" class="form-label">Client</label>
+                            <select class="form-control {% if form.client.errors %}is-invalid{% endif %}" 
+                                    id="id_client" name="client" required>
+                                <option value="">Sélectionnez un client</option>
+                                {% for client in form.fields.client.queryset %}
+                                    <option value="{{ client.id }}" {% if form.client.value == client.id %}selected{% endif %}>
+                                        {{ client.nom }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.client.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.client.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_projet" class="form-label">Projet</label>
+                            <select class="form-control {% if form.projet.errors %}is-invalid{% endif %}" 
+                                    id="id_projet" name="projet" required>
+                                <option value="">Sélectionnez d'abord un client</option>
+                            </select>
+                            {% if form.projet.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.projet.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="id_montant" class="form-label">Montant (€)</label>
+                            <input type="number" step="0.01" class="form-control {% if form.montant.errors %}is-invalid{% endif %}" 
+                                   id="id_montant" name="montant" value="{{ form.montant.value|default:'' }}" required>
+                            {% if form.montant.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.montant.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_statut_paiement" class="form-label">Statut</label>
+                            <select class="form-control {% if form.statut_paiement.errors %}is-invalid{% endif %}" 
+                                    id="id_statut_paiement" name="statut_paiement" required>
+                                {% for value, label in form.fields.statut_paiement.choices %}
+                                    <option value="{{ value }}" {% if form.statut_paiement.value == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if form.statut_paiement.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.statut_paiement.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_notes" class="form-label">Notes</label>
+                            <textarea class="form-control {% if form.notes.errors %}is-invalid{% endif %}" 
+                                      id="id_notes" name="notes" rows="4">{{ form.notes.value|default:'' }}</textarea>
+                            {% if form.notes.errors %}
+                                <div class="invalid-feedback">
+                                    {{ form.notes.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <a href="{% url 'factures:facture_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

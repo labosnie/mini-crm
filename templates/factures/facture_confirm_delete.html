@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block title %} Supprimer la facture {{
+facture.numero }} {% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="mb-0">Confirmer la suppression</h2>
+    </div>
+    <div class="card-body">
+      <p class="lead">
+        Êtes-vous sûr de vouloir supprimer la facture
+        <strong>{{ facture.numero }}</strong> ?
+      </p>
+
+      <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        Cette action est irréversible.
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+          <i class="fas fa-trash"></i> Confirmer la suppression
+        </button>
+        <a href="{% url 'factures:facture_list' %}" class="btn btn-secondary">
+          <i class="fas fa-times"></i> Annuler
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

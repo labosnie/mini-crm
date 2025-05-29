@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% block title %}Détails du Client - {{ client.nom
+}}{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2 class="mb-0">Détails du Client</h2>
+      <div>
+        <a
+          href="{% url 'clients:client_update' client.pk %}"
+          class="btn btn-warning"
+        >
+          <i class="fas fa-edit"></i> Modifier
+        </a>
+        <a
+          href="{% url 'clients:client_delete' client.pk %}"
+          class="btn btn-danger"
+        >
+          <i class="fas fa-trash"></i> Supprimer
+        </a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Informations Personnelles</h3>
+          <table class="table">
+            <tr>
+              <th>Nom</th>
+              <td>{{ client.nom }}</td>
+            </tr>
+            <tr>
+              <th>Email</th>
+              <td>{{ client.email }}</td>
+            </tr>
+            <tr>
+              <th>Téléphone</th>
+              <td>{{ client.telephone }}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <h3>Informations Complémentaires</h3>
+          <table class="table">
+            <tr>
+              <th>Adresse</th>
+              <td>{{ client.adresse|default:"Non renseignée" }}</td>
+            </tr>
+            <tr>
+              <th>Date de création</th>
+              <td>{{ client.date_creation|date:"d/m/Y" }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="{% url 'clients:client_list' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Retour à la liste
+    </a>
+  </div>
+</div>
+{% endblock %}
