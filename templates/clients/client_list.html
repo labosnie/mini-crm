@@ -13,16 +13,32 @@
   {% endfor %} {% endif %}
 
   <!-- Barre de recherche -->
-  <form method="get" class="d-flex mb-3">
-    <input
-      type="text"
-      name="q"
-      value="{{ request.GET.q }}"
-      class="form-control me-2"
-      placeholder="Rechercher par nom ou email..."
-    />
-    <button class="btn btn-outline-primary" type="submit">Rechercher</button>
-  </form>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <form method="get" class="d-flex">
+        <input
+          type="text"
+          name="q"
+          value="{{ request.GET.q }}"
+          class="form-control me-2"
+          placeholder="Rechercher par nom, prénom, email ou ville..."
+        />
+        <button class="btn btn-outline-primary" type="submit">Rechercher</button>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <form method="get" class="d-flex">
+        <select name="statut" class="form-select me-2" onchange="this.form.submit()">
+          <option value="">Tous les statuts</option>
+          {% for value, label in statut_choices %}
+            <option value="{{ value }}" {% if value == statut_filter %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+  </div>
 
   <div class="table-responsive">
     <table class="table table-striped">
@@ -31,6 +47,8 @@
           <th>Nom</th>
           <th>Email</th>
           <th>Téléphone</th>
+          <th>Ville</th>
+          <th>Statut</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -38,12 +56,20 @@
         {% for client in clients %}
         <tr>
           <td>
-            <a href="{% url 'clients:client_detail' client.pk %}"
-              >{{ client.nom }}</a
-            >
+            <a href="{% url 'clients:client_detail' client.pk %}">
+              {{ client.prenom }} {{ client.nom }}
+            </a>
           </td>
           <td>{{ client.email }}</td>
           <td>{{ client.telephone }}</td>
+          <td>{{ client.ville }}</td>
+          <td>
+            <span class="badge {% if client.statut == 'actif' %}bg-success
+                             {% elif client.statut == 'prospect' %}bg-warning
+                             {% else %}bg-secondary{% endif %}">
+              {{ client.get_statut_display }}
+            </span>
+          </td>
           <td>
             <a
               href="{% url 'clients:client_detail' client.pk %}"
@@ -67,7 +93,7 @@
         </tr>
         {% empty %}
         <tr>
-          <td colspan="4" class="text-center">Aucun client trouvé.</td>
+          <td colspan="6" class="text-center">Aucun client trouvé.</td>
         </tr>
         {% endfor %}
       </tbody>
