@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -29,6 +30,7 @@ class Client(models.Model):
         default='prospect'
     )
     notes = models.TextField(blank=True, help_text="Notes et informations supplémentaires sur le client")
+    tags = models.ManyToManyField('Tag', blank=True, related_name='clients')
     
     
     
@@ -39,3 +41,27 @@ class Client(models.Model):
         verbose_name = "Client"
         verbose_name_plural = "Clients"
         ordering = ['-date_creation']
+
+class Interaction(models.Model):
+    TYPE_CHOICES = [
+        ('appel', 'Appel téléphonique'),
+        ('email', 'Email'),
+        ('reunion', 'Réunion'),
+        ('note', 'Note interne'),
+    ]
+    
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='interactions')
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    date = models.DateTimeField(auto_now_add=True)
+    description = models.TextField()
+    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    class Meta:
+        ordering = ['-date']
+
+class Tag(models.Model):
+    nom = models.CharField(max_length=50, unique=True)
+    couleur = models.CharField(max_length=7, default="#000000")  # Format hexadécimal
+    
+    def __str__(self):
+        return self.nom
