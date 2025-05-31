@@ -10,4 +10,6 @@ urlpatterns = [
     path('<int:pk>/modifier/', views.facture_update, name='facture_update'),
     path('<int:pk>/supprimer/', views.facture_delete, name='facture_delete'),
     path('get-projets-client/', views.get_projets_client, name='get_projets_client'),
+    path('export-csv/', views.export_csv, name='export_csv'),
+    path('export-pdf/', views.export_pdf, name='export_pdf'),
 ] 

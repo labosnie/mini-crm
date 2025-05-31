@@ -4,12 +4,12 @@ from .models import Facture
 class FactureForm(forms.ModelForm):
     class Meta:
         model = Facture
-        fields = ['numero', 'client', 'projet', 'montant', 'statut_paiement', 'notes']
+        fields = ['client', 'projet', 'montant', 'date_echeance', 'statut_paiement', 'notes']
         widgets = {
-            'numero': forms.TextInput(attrs={'class': 'form-control'}),
             'client': forms.Select(attrs={'class': 'form-control'}),
             'projet': forms.Select(attrs={'class': 'form-control'}),
             'montant': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'date_echeance': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'statut_paiement': forms.Select(attrs={'class': 'form-control'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }

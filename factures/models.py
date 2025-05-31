@@ -1,7 +1,7 @@
 from django.db import models
 from clients.models import Client
 from projets.models import Projet
-
+from django.utils import timezone
 
 class Facture(models.Model):
     """
@@ -44,11 +44,20 @@ class Facture(models.Model):
         help_text="Date a laquelle la facture a été émise"
     )
 
+    # Date d'échéance de paiement
+    date_echeance = models.DateField(
+        null=True,
+        blank=True,
+        help_text="Date limite de paiement"
+    )
+
     # Statut de paiement
     STATUT_CHOICES = [
         ("envoyée",   "Envoyée"),
         ("payée",     "Payée"),
         ("en_retard", "En retard"),
+        ("annulée",   "Annulée"),
+        ("brouillon", "Brouillon"),
     ]
     statut_paiement = models.CharField(
         max_length=20,
@@ -77,7 +86,34 @@ class Facture(models.Model):
         from django.urls import reverse
         return reverse("detail_facture", args=[str(self.pk)])
     
-    
+    def save(self, *args, **kwargs):
+        if not self.numero:
+            self.numero = self.generer_numero()
+        super().save(*args, **kwargs)
+
+    def generer_numero(self):
+        """
+        Génère un numéro de facture unique au format ANNEE-NUMERO
+        Exemple: 2024-001
+        """
+        annee = timezone.now().year
+        #Récupère le dernier numero de facture pour cette année
+        dernier_numero = Facture.objects.filter(
+            numero__startswith=f"{annee}-"
+        ).order_by("-numero").first()
+
+        if dernier_numero:
+            #Extrait le numero et l'incrémente
+            try:
+                dernier_num = int(dernier_numero.numero.split("-")[1])
+                nouveau_num = dernier_num + 1
+            except (IndexError, ValueError):
+                nouveau_num = 1
+        else:
+            nouveau_num = 1
+
+        #Formate le nouveau numero avec des zéros devant
+        return f"{annee}-{nouveau_num:03d}"
 
 
 

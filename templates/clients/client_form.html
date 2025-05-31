@@ -1,12 +1,18 @@
-{% extends 'base.html' %} {% load crispy_forms_tags %} {% block title %} {% if
-form.instance.pk %} Modifier {% else %} Nouveau {% endif %} Client {% endblock
-%} {% block content %}
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block title %}
+{% if form.instance.pk %} Modifier 
+{% else %} Nouveau 
+{% endif %}
+ Client 
+ {% endblock%}
+ 
+ 
+ {% block content %}
 <!-- Contenu de la page -->
 
 <div class="container mt-4">
   <div class="card">
     <div class="card-header">
-      <h2>
+      <h2 class="mb-0">
         {% if form.instance.pk %}Modifier{% else %}Nouveau{% endif %} Client
       </h2>
     </div>
@@ -14,26 +20,113 @@ form.instance.pk %} Modifier {% else %} Nouveau {% endif %} Client {% endblock
       <form method="post" novalidate>
         {% csrf_token %}
 
+        {% if form.errors %}
+          <div class="alert alert-danger">
+            Veuillez corriger les erreurs ci-dessous.
+          </div>
+        {% endif %}
+
         <div class="row">
           <!-- Informations personnelles -->
           <div class="col-md-6">
             <h4 class="mb-3">Informations personnelles</h4>
-            <div class="mb-3">{{ form.nom|as_crispy_field }}</div>
-            <div class="mb-3">{{ form.prenom|as_crispy_field }}</div>
-            <div class="mb-3">{{ form.email|as_crispy_field }}</div>
-            <div class="mb-3">{{ form.telephone|as_crispy_field }}</div>
-            <div class="mb-3">{{ form.statut|as_crispy_field }}</div>
+            
+            <div class="mb-3">
+              <label for="id_nom" class="form-label">Nom</label>
+              <input type="text" class="form-control {% if form.nom.errors %}is-invalid{% endif %}" 
+                     id="id_nom" name="nom" value="{{ form.nom.value|default:'' }}" required>
+              {% if form.nom.errors %}
+                <div class="invalid-feedback">{{ form.nom.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_prenom" class="form-label">Prénom</label>
+              <input type="text" class="form-control {% if form.prenom.errors %}is-invalid{% endif %}" 
+                     id="id_prenom" name="prenom" value="{{ form.prenom.value|default:'' }}" required>
+              {% if form.prenom.errors %}
+                <div class="invalid-feedback">{{ form.prenom.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_email" class="form-label">Email</label>
+              <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                     id="id_email" name="email" value="{{ form.email.value|default:'' }}" required>
+              {% if form.email.errors %}
+                <div class="invalid-feedback">{{ form.email.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_telephone" class="form-label">Téléphone</label>
+              <input type="tel" class="form-control {% if form.telephone.errors %}is-invalid{% endif %}" 
+                     id="id_telephone" name="telephone" value="{{ form.telephone.value|default:'' }}">
+              {% if form.telephone.errors %}
+                <div class="invalid-feedback">{{ form.telephone.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_statut" class="form-label">Statut</label>
+              <select class="form-control {% if form.statut.errors %}is-invalid{% endif %}" 
+                      id="id_statut" name="statut" required>
+                {% for value, label in form.fields.statut.choices %}
+                  <option value="{{ value }}" {% if form.statut.value == value %}selected{% endif %}>
+                    {{ label }}
+                  </option>
+                {% endfor %}
+              </select>
+              {% if form.statut.errors %}
+                <div class="invalid-feedback">{{ form.statut.errors }}</div>
+              {% endif %}
+            </div>
           </div>
 
           <!-- Adresse -->
           <div class="col-md-6">
             <h4 class="mb-3">Adresse</h4>
-            <div class="mb-3">{{ form.adresse|as_crispy_field }}</div>
-            <div class="row">
-              <div class="col-md-6">{{ form.code_postal|as_crispy_field }}</div>
-              <div class="col-md-6">{{ form.ville|as_crispy_field }}</div>
+            
+            <div class="mb-3">
+              <label for="id_adresse" class="form-label">Adresse</label>
+              <textarea class="form-control {% if form.adresse.errors %}is-invalid{% endif %}" 
+                        id="id_adresse" name="adresse" rows="3">{{ form.adresse.value|default:'' }}</textarea>
+              {% if form.adresse.errors %}
+                <div class="invalid-feedback">{{ form.adresse.errors }}</div>
+              {% endif %}
             </div>
-            <div class="mb-3">{{ form.pays|as_crispy_field }}</div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="id_code_postal" class="form-label">Code postal</label>
+                  <input type="text" class="form-control {% if form.code_postal.errors %}is-invalid{% endif %}" 
+                         id="id_code_postal" name="code_postal" value="{{ form.code_postal.value|default:'' }}">
+                  {% if form.code_postal.errors %}
+                    <div class="invalid-feedback">{{ form.code_postal.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="id_ville" class="form-label">Ville</label>
+                  <input type="text" class="form-control {% if form.ville.errors %}is-invalid{% endif %}" 
+                         id="id_ville" name="ville" value="{{ form.ville.value|default:'' }}">
+                  {% if form.ville.errors %}
+                    <div class="invalid-feedback">{{ form.ville.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="id_pays" class="form-label">Pays</label>
+              <input type="text" class="form-control {% if form.pays.errors %}is-invalid{% endif %}" 
+                     id="id_pays" name="pays" value="{{ form.pays.value|default:'' }}">
+              {% if form.pays.errors %}
+                <div class="invalid-feedback">{{ form.pays.errors }}</div>
+              {% endif %}
+            </div>
           </div>
         </div>
 
@@ -41,32 +134,35 @@ form.instance.pk %} Modifier {% else %} Nouveau {% endif %} Client {% endblock
         <div class="row mt-4">
           <div class="col-12">
             <h4 class="mb-3">Notes</h4>
-            <div class="mb-3">{{ form.notes|as_crispy_field }}</div>
+            <div class="mb-3">
+              <textarea class="form-control {% if form.notes.errors %}is-invalid{% endif %}" 
+                        id="id_notes" name="notes" rows="4">{{ form.notes.value|default:'' }}</textarea>
+              {% if form.notes.errors %}
+                <div class="invalid-feedback">{{ form.notes.errors }}</div>
+              {% endif %}
+            </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Tags</label>
-          <select name="tags" class="form-control" multiple>
-            {% for tag in tags %}
-            <option
-              value="{{ tag.id }}"
-              {%
-              if
-              tag
-              in
-              form.instance.tags.all
-              %}selected{%
-              endif
-              %}
-              style="color: {{ tag.couleur }}"
-            >
-              {{ tag.nom }}
-            </option>
-            {% endfor %}
-          </select>
+        <!-- Tags -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <h4 class="mb-3">Tags</h4>
+            <div class="mb-3">
+              <select name="tags" class="form-control" multiple>
+                {% for tag in tags %}
+                  <option value="{{ tag.id }}" 
+                          {% if tag in form.instance.tags.all %}selected{% endif %}
+                          style="color: {{ tag.couleur }}">
+                    {{ tag.nom }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
         </div>
 
+        <!-- Boutons -->
         <div class="mt-4">
           <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i>

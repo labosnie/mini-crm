@@ -4,14 +4,103 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Liste des Factures</h1>
-    <a href="{% url 'factures:facture_create' %}" class="btn btn-primary">
-      <i class="fas fa-plus"></i> Nouvelle Facture
-    </a>
+    <div>
+      <a href="{% url 'factures:export_csv' %}" class="btn btn-success me-2">
+        <i class="fas fa-file-csv"></i> Exporter CSV
+      </a>
+      <a href="{% url 'factures:export_pdf' %}" class="btn btn-danger me-2">
+        <i class="fas fa-file-pdf"></i> Exporter PDF
+      </a>
+      <a href="{% url 'factures:facture_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Nouvelle Facture
+      </a>
+    </div>
   </div>
 
   {% if messages %} {% for message in messages %}
   <div class="alert alert-{{ message.tags }}">{{ message }}</div>
   {% endfor %} {% endif %}
+
+  <!-- Barre de recherche et filtres -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <form method="get" class="card">
+        <div class="card-body">
+          <div class="row">
+            <!-- Recherche textuelle -->
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Recherche</label>
+                <input type="text" name="q" class="form-control" 
+                       value="{{ request.GET.q }}" 
+                       placeholder="Numéro, client...">
+              </div>
+            </div>
+            
+            <!-- Filtre par client -->
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Client</label>
+                <select name="client" class="form-control">
+                  <option value="">Tous les clients</option>
+                  {% for client in clients %}
+                    <option value="{{ client.id }}" 
+                            {% if request.GET.client == client.id|stringformat:"i" %}selected{% endif %}>
+                      {{ client.nom }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            
+            <!-- Filtre par statut -->
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Statut</label>
+                <select name="statut" class="form-control">
+                  <option value="">Tous les statuts</option>
+                  {% for value, label in statut_choices %}
+                    <option value="{{ value }}" 
+                            {% if value == request.GET.statut %}selected{% endif %}>
+                      {{ label }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            
+            <!-- Filtre par date -->
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Date début</label>
+                <input type="date" name="date_debut" class="form-control" 
+                       value="{{ request.GET.date_debut }}">
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Date fin</label>
+                <input type="date" name="date_fin" class="form-control" 
+                       value="{{ request.GET.date_fin }}">
+              </div>
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Filtrer
+              </button>
+              <a href="{% url 'factures:facture_list' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Réinitialiser
+              </a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div class="table-responsive">
     <table class="table table-striped">
@@ -22,6 +111,7 @@
           <th>Projet</th>
           <th>Montant</th>
           <th>Date d'émission</th>
+          <th>Date d'échéance</th>
           <th>Statut</th>
           <th>Actions</th>
         </tr>
@@ -35,8 +125,14 @@
           <td>{{ facture.montant }} €</td>
           <td>{{ facture.date_emission|date:"d/m/Y" }}</td>
           <td>
+            {% if facture.date_echeance %} {{ facture.date_echeance|date:"d/m/Y" }}
+             {% else %}
+            <span class="text-muted">-</span>
+            {% endif %}
+          </td>
+          <td>
             <span
-              class="badge {% if facture.statut_paiement == 'payée' %}bg-success{% elif facture.statut_paiement == 'en_retard' %}bg-danger{% else %}bg-warning{% endif %}"
+              class="badge {% if facture.statut_paiement == 'payée' %}bg-success{% elif facture.statut_paiement == 'en_retard' %}bg-danger{% elif facture.statut_paiement == 'brouillon' %}bg-secondary{% elif facture.statut_paiement == 'annulée' %}bg-dark{% else %}bg-warning{% endif %}"
             >
               {{ facture.get_statut_paiement_display }}
             </span>
@@ -64,11 +160,56 @@
         </tr>
         {% empty %}
         <tr>
-          <td colspan="7" class="text-center">Aucune facture trouvée.</td>
+          <td colspan="8" class="text-center">Aucune facture trouvée.</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+
+  <!-- Pagination -->
+  {% if is_paginated %}
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+            <i class="fas fa-chevron-left"></i> Précédent
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link"><i class="fas fa-chevron-left"></i> Précédent</span>
+        </li>
+      {% endif %}
+
+      {% for num in paginator.page_range %}
+        {% if num == page_obj.number %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+              {{ num }}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+            Suivant <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Suivant <i class="fas fa-chevron-right"></i></span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
 </div>
 {% endblock %}
