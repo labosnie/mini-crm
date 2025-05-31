@@ -1,5 +1,11 @@
 # Mini-CRM
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com/)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple.svg)](https://getbootstrap.com/)
+[![Status](https://img.shields.io/badge/Status-Active-success.svg)](https://github.com/votre-username/mini-crm)
+
 Un système de gestion de la relation client (CRM) léger et efficace, développé avec Django.
 
 ## 🚀 Fonctionnalités
@@ -127,4 +133,3 @@ Pour toute question ou problème, veuillez :
 - Django pour leur excellent framework
 - Bootstrap pour l'interface utilisateur
 - La communauté open source pour leur support
-
