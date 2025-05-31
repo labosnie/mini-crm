@@ -1,283 +1,130 @@
-mini-CRM
-Une application Django légère pour les freelances, permettant de gérer :
+# Mini-CRM
 
-Les clients,
+Un système de gestion de la relation client (CRM) léger et efficace, développé avec Django.
 
-Les projets,
+## 🚀 Fonctionnalités
 
-Les factures (avec numéros automatiques et dates d’échéance),
+### Gestion des Clients
 
-L’export de toutes les factures au format CSV ou PDF.
+- Création et gestion des profils clients
+- Suivi des interactions
+- Système de tags personnalisables
+- Export des données (CSV/PDF)
 
-📋 Table des matières
-Fonctionnalités
+### Gestion des Projets
 
-Installation
+- Suivi des projets par client
+- Statuts personnalisables
+- Dates de début et de fin
+- Montants et budgets
 
-Configuration
+### Gestion des Factures
 
-Utilisation
+- Numérotation automatique
+- Suivi des paiements
+- Dates d'échéance
+- Export des factures (CSV/PDF)
 
-Authentification
+## 🛠️ Technologies Utilisées
 
-Clients
+- Python 3.13
+- Django 5.2
+- Bootstrap 5
+- Font Awesome
+- ReportLab (pour les exports PDF)
 
-Projets
+## 📋 Prérequis
 
-Factures
+- Python 3.13 ou supérieur
+- pip (gestionnaire de paquets Python)
+- Un environnement virtuel (recommandé)
 
-Export CSV / PDF
+## 🔧 Installation
 
-Personnalisation
+1. Cloner le repository :
 
-Contribuer
-
-Licence
-
-🔥 Fonctionnalités
-Gestion des clients
-
-Création, modification, suppression, recherche, pagination
-
-Upload facultatif de document (contrat, fichier PDF, etc.)
-
-Gestion des projets
-
-Lier un projet à un client
-
-Statut (Planifié, En cours, Terminé)
-
-Dates de début / de fin, priorité, validation métier (date de fin ≥ date de début)
-
-Gestion des factures
-
-Numéro de facture généré automatiquement (ex : 2025-001, 2025-002, …)
-
-Date d’émission automatique à la création
-
-Date d’échéance configurable
-
-Montant, statut de paiement (Envoyée, Payée, En retard)
-
-Validation : montant positif + cohérence client/projet
-
-Recherche et filtres sur toutes les listes (clients, projets, factures)
-
-Pagination (10 éléments par page par défaut)
-
-Page d’accueil (Dashboard) avec navigation vers chaque section
-
-Export :
-
-CSV : télécharge un fichier CSV listant toutes les factures
-
-PDF : génère un fichier PDF contenant toutes les factures
-
-Interface responsive avec Bootstrap 5
-
-Authentification et gestion des utilisateurs via django-allauth
-
-Permissions :
-
-Les utilisateurs ne voient et n’éditent que leurs propres clients/projets/factures
-
-Seuls les administrateurs peuvent supprimer définitivement un enregistrement
-
-📥 Installation
-Clone le dépôt :
-
-bash
-Copier
-Modifier
-git clone https://github.com/labosnie/mini-crm.git
+```bash
+git clone https://github.com/votre-username/mini-crm.git
 cd mini-crm
-Crée et active un virtualenv (recommandé) :
+```
 
-bash
-Copier
-Modifier
-python3 -m venv venv
-source venv/bin/activate # Linux/macOS  
-venv\Scripts\activate.ps1 # Windows PowerShell
-Installe les dépendances :
+2. Créer et activer l'environnement virtuel :
 
-bash
-Copier
-Modifier
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+```
+
+3. Installer les dépendances :
+
+```bash
 pip install -r requirements.txt
-Applique les migrations de la base de données :
+```
 
-bash
-Copier
-Modifier
+4. Configurer la base de données :
+
+```bash
 python manage.py migrate
-Crée un super-user Django (pour accéder à l’admin) :
+```
 
-bash
-Copier
-Modifier
+5. Créer un superutilisateur :
+
+```bash
 python manage.py createsuperuser
-Lance le serveur de développement :
+```
 
-bash
-Copier
-Modifier
+6. Lancer le serveur de développement :
+
+```bash
 python manage.py runserver
-Ouvre ton navigateur à l’adresse http://127.0.0.1:8000/ pour accéder à l’application.
+```
 
-L’admin Django est disponible sur /admin/.
+## 📦 Structure du Projet
 
-⚙️ Configuration
-Clé secrète et DEBUG
-Si tu veux configurer en mode production, pense à définir les variables d’environnement :
+```
+mini-crm/
+├── clients/          # Application de gestion des clients
+├── projets/          # Application de gestion des projets
+├── factures/         # Application de gestion des factures
+├── templates/        # Templates HTML
+├── static/          # Fichiers statiques (CSS, JS, images)
+└── manage.py        # Script de gestion Django
+```
 
-bash
-Copier
-Modifier
-export DJANGO_SECRET_KEY='TaCléSecrèteIci'
-export DJANGO_DEBUG=False
-export DJANGO_ALLOWED_HOSTS='ton_domaine.com'
-Stockage des fichiers
-Les documents clients (contrats, PDF joints) sont sauvegardés dans MEDIA_ROOT.
-Dans settings.py, tu peux définir :
+## 🔐 Sécurité
 
-python
-Copier
-Modifier
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-Pour servir ces fichiers en mode développement :
+- Authentification requise pour toutes les fonctionnalités
+- Protection CSRF sur tous les formulaires
+- Validation des données côté serveur
+- Gestion sécurisée des mots de passe
 
-python
-Copier
-Modifier
-from django.conf import settings
-from django.conf.urls.static import static
+## 📝 Licence
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-🚀 Utilisation
-Authentification
-En mode développement, rends-toi sur /accounts/login/ pour te connecter (ou /accounts/signup/ pour créer un nouveau compte).
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
-Si tu es super-user, tu peux aussi accéder à l’admin (/admin/) pour manipuler directement les données.
+## 👥 Contribution
 
-Clients
-Clique sur Clients dans la barre de navigation.
+Les contributions sont les bienvenues ! N'hésitez pas à :
 
-Si aucun client n’existe, la liste est vide – clique sur Ajouter un client.
+1. Fork le projet
+2. Créer une branche pour votre fonctionnalité
+3. Commiter vos changements
+4. Pousser vers la branche
+5. Ouvrir une Pull Request
 
-Renseigne :
+## 📞 Support
 
-Nom
+Pour toute question ou problème, veuillez :
 
-Email
+- Ouvrir une issue sur GitHub
+- Décrire clairement le problème
+- Fournir les étapes pour reproduire le bug
+- Inclure les messages d'erreur pertinents
 
-Téléphone (facultatif)
+## 🙏 Remerciements
 
-Adresse (facultatif)
+- Django pour leur excellent framework
+- Bootstrap pour l'interface utilisateur
+- La communauté open source pour leur support
 
-Statut (Prospect, Client, Inactif)
-
-Documents (upload d’un fichier PDF ou image – facultatif)
-
-Clique sur Enregistrer : ton client apparaît dans la liste.
-
-Tu peux rechercher par nom ou email, filtrer par statut, et naviguer par pagination (10 clients par page).
-
-Pour modifier, clique sur l’icône ✏️ ; pour supprimer, clique sur l’icône 🗑️ (cet enregistrement sera définitivement supprimé).
-
-Projets
-Clique sur Projets dans la barre de navigation.
-
-Ajouter un projet :
-
-Titre
-
-Client (sélectionne dans la liste des clients existants)
-
-Description (facultatif)
-
-Statut (Planifié, En cours, Terminé)
-
-Date de début
-
-Date de fin (facultative, mais si renseignée, doit être ≥ date de début)
-
-Priorité (Haute, Moyenne, Basse)
-
-Enregistrer : ton projet apparaît dans la liste.
-
-Recherche, filtres (par statut / priorité) et pagination sont disponibles.
-
-Factures
-Clique sur Factures dans la barre de navigation.
-
-Ajouter une facture :
-
-Client (pré-rempli si le seul client possible)
-
-Projet (ne liste que les projets du client sélectionné)
-
-Numéro de facture (généré automatiquement, format YYYY-XXX)
-
-Montant (doit être un nombre positif)
-
-Date d’échéance (date limite de paiement)
-
-Statut de paiement (par défaut “Envoyée”)
-
-Notes (facultatif)
-
-Enregistrer : la facture apparaît dans la liste, avec :
-
-Numéro (ex : 2025-001, 2025-002, …)
-
-Client
-
-Projet
-
-Montant (formaté en euros)
-
-Date d’émission affichée au format jj/mm/aaaa
-
-Date d’échéance (ou “–” si non renseignée)
-
-Statut (“Envoyée”, “Payée”, “En retard”)
-
-Recherche par numéro de facture ou nom du client, filtres par client / statut / date début / date fin, et pagination (10 factures par page).
-
-➕ Export CSV / PDF
-Exporter en CSV
-Dans la page Liste des Factures, clique sur le bouton Exporter CSV (bouton vert).
-
-Un fichier factures.csv est généré et téléchargé automatiquement.
-
-Il contient : Numéro, Client, Projet, Montant, Date d’émission, Date d’échéance, Statut.
-
-Exporter en PDF
-Dans la même page, clique sur Exporter PDF (bouton rouge).
-
-Le fichier factures.pdf est généré (grâce à WeasyPrint) et téléchargé.
-
-Il affiche un tableau formaté reprenant les mêmes colonnes que le CSV, avec le style Bootstrap repris.
-
-🛠️ Personnalisation
-Changer le nombre de résultats par page
-Dans clients/views.py, modifie paginate_by = 10 à la valeur souhaitée. Idem pour ProjetListView et FactureListView.
-
-Modifier le format de numérotation automatique des factures
-Le code se trouve dans factures/models.py (méthode save() ou utilitaire get_next_numero()). Adapte le format YYYY-XXX selon tes besoins (par ex. FAC-XXXX, etc.).
-
-Configurer le style CSS
-Par défaut, on utilise le CDN Bootstrap 5. Tu peux ajouter ton propre fichier CSS dans static/css/ et l’inclure dans base.html.
-
-🤝 Contribuer
-Fork le projet sur GitHub.
-
-Crée une branche (git checkout -b feature/ma-fonctionnalité).
-
-Commit tes changements (git commit -m "Ajout de la fonctionnalité X").
-
-Push ta branche (git push origin feature/ma-fonctionnalité).
-
-Ouvre une Pull Request.
