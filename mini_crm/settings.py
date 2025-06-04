@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     
     # Vos applications
+    'mini_crm',
     'clients',
     'projets',
     'factures',

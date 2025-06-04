@@ -1,9 +1,35 @@
-{% extends 'base.html' %} {% block extra_css %}
+{% extends 'base.html' %} {% load crm_tags %} {% block extra_css %}
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
   rel="stylesheet"
 />
 <style>
+  .welcome-card {
+    background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+    color: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  .welcome-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  .welcome-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .stat-item i {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
   .card {
     transition: transform 0.3s ease-in-out;
   }
@@ -43,6 +69,29 @@
 </style>
 {% endblock %} {% block content %}
 <div class="container mt-4">
+  {% get_user_stats as stats %}
+  <div class="welcome-card animate__animated animate__fadeIn">
+    <h2>
+      <i class="fas fa-user-circle me-2"></i>
+      Bonjour, {{ user.first_name|default:user.username }} !
+    </h2>
+    <p class="mb-0">Voici un aperçu de votre activité</p>
+    <div class="welcome-stats">
+      <div class="stat-item">
+        <i class="fas fa-file-invoice"></i>
+        <span>{{ stats.factures_en_attente }} factures en attente</span>
+      </div>
+      <div class="stat-item">
+        <i class="fas fa-project-diagram"></i>
+        <span>{{ stats.projets_en_cours }} projets en cours</span>
+      </div>
+      <div class="stat-item">
+        <i class="fas fa-users"></i>
+        <span>{{ stats.clients_actifs }} clients actifs</span>
+      </div>
+    </div>
+  </div>
+
   <h1 class="mb-4 animate__animated animate__fadeIn">Tableau de Bord</h1>
 
   <!-- Cartes statistiques -->
