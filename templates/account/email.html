@@ -1,0 +1,64 @@
+{% extends 'account/account.html' %}
+ {% block account_title %}Gestion des emails{% endblock %}
+  {% block account_content %} 
+  {% if user.emailaddress_set.all%}
+  {% load crispy_forms_tags %}
+
+<p>Les adresses email suivantes sont associées à votre compte :</p>
+
+<form action="{% url 'account_email' %}" class="email_list" method="post">
+  {% csrf_token %}
+  <fieldset class="blockLabels">
+    {% for emailaddress in user.emailaddress_set.all %}
+    <div class="ctrlHolder">
+      <label
+        for="email_radio_{{forloop.counter}}"
+        class="{% if emailaddress.primary %}primary_email{% endif %}"
+      >
+        <input
+          id="email_radio_{{forloop.counter}}"
+          type="radio"
+          name="email"
+          {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{% endif %}
+          value="{{emailaddress.email}}"
+        />
+        {{emailaddress.email }} {% if emailaddress.verified %}
+        <span class="verified badge bg-success">Vérifié</span>
+        {% else %}
+        <span class="unverified badge bg-warning">Non vérifié</span>
+        {% endif %} {% if emailaddress.primary %}
+        <span class="primary badge bg-primary">Principal</span>
+        {% endif %}
+      </label>
+    </div>
+    {% endfor %}
+
+    <div class="buttonHolder mt-3">
+      <button class="btn btn-primary" type="submit" name="action_primary">
+        Définir comme principal
+      </button>
+      <button class="btn btn-warning" type="submit" name="action_send">
+        Renvoyer la vérification
+      </button>
+      <button class="btn btn-danger" type="submit" name="action_remove">
+        Supprimer
+      </button>
+    </div>
+  </fieldset>
+</form>
+{% else %}
+<p>
+  <strong>Attention :</strong> Vous n'avez pas encore configuré d'adresse email.
+  Vous devriez en ajouter une pour pouvoir recevoir des notifications,
+  réinitialiser votre mot de passe, etc.
+</p>
+{% endif %}
+
+<h3 class="mt-4">Ajouter une adresse email</h3>
+<form method="post" action="{% url 'account_email' %}" class="add_email">
+  {% csrf_token %} {{ form|crispy }}
+  <button class="btn btn-primary" name="action_add" type="submit">
+    Ajouter
+  </button>
+</form>
+{% endblock %}
