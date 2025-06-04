@@ -1,0 +1,219 @@
+{% extends 'base.html' %} {% block extra_css %}
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  rel="stylesheet"
+/>
+<style>
+  .card {
+    transition: transform 0.3s ease-in-out;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  .stat-card {
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  .stat-card .card-body {
+    padding: 1.5rem;
+  }
+  .stat-card .card-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .stat-card h2 {
+    font-size: 2rem;
+    margin-bottom: 0;
+  }
+  .chart-container {
+    position: relative;
+    height: 300px;
+  }
+  .client-list-item {
+    transition: background-color 0.3s ease;
+  }
+  .client-list-item:hover {
+    background-color: #f8f9fa;
+  }
+  .badge {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4 animate__animated animate__fadeIn">Tableau de Bord</h1>
+
+  <!-- Cartes statistiques -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div
+        class="card stat-card bg-primary text-white animate__animated animate__fadeInLeft"
+      >
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-euro-sign me-2"></i>Chiffre d'Affaires
+          </h5>
+          <h2 class="animate__animated animate__fadeInUp">
+            {{ chiffre_affaire|floatformat:2 }} €
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div
+        class="card stat-card bg-danger text-white animate__animated animate__fadeInUp"
+      >
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-exclamation-circle me-2"></i>Factures Impayées
+          </h5>
+          <h2 class="animate__animated animate__fadeInUp">
+            {{ factures_impayees }}
+          </h2>
+          <p class="mb-0">Montant: {{ montant_impaye|floatformat:2 }} €</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div
+        class="card stat-card bg-success text-white animate__animated animate__fadeInRight"
+      >
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-tasks me-2"></i>Projets en Cours
+          </h5>
+          <h2 class="animate__animated animate__fadeInUp">
+            {{ projets_en_cours }}
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Graphique d'évolution du CA -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="card animate__animated animate__fadeInUp">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-chart-line me-2"></i>Évolution du Chiffre
+            d'Affaires
+          </h5>
+          <div class="chart-container">
+            <canvas id="caChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Clients -->
+    <div class="col-md-4">
+      <div class="card animate__animated animate__fadeInRight">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-users me-2"></i>Top 5 Clients
+          </h5>
+          <ul class="list-group">
+            {% for client in top_clients %}
+            <li
+              class="list-group-item client-list-item d-flex justify-content-between align-items-center"
+            >
+              <div>
+                <i class="fas fa-user-circle me-2"></i>
+                {{ client.nom }}
+              </div>
+              <span class="badge bg-primary rounded-pill">
+                {{ client.total_factures }} factures
+              </span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var ca_labels = {{ ca_labels|safe }};
+    var ca_data = {{ ca_data|safe }};
+    var ctx = document.getElementById("caChart").getContext("2d");
+
+    var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(54, 162, 235, 0.2)');
+    gradient.addColorStop(1, 'rgba(54, 162, 235, 0)');
+
+    var caChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ca_labels,
+        datasets: [{
+          label: "Chiffre d'Affaires",
+          data: ca_data,
+          backgroundColor: gradient,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 2,
+          pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            titleFont: {
+              size: 14
+            },
+            bodyFont: {
+              size: 14
+            },
+            callbacks: {
+              label: function(context) {
+                return context.parsed.y.toFixed(2) + ' €';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.1)'
+            },
+            ticks: {
+              callback: function(value) {
+                return value.toFixed(2) + ' €';
+              }
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        animation: {
+          duration: 2000,
+          easing: 'easeInOutQuart'
+        }
+      }
+    });
+  });
+</script>
+{% endblock %} {% endblock content %}

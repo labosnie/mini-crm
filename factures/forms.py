@@ -24,4 +24,12 @@ class FactureForm(forms.ModelForm):
             except (ValueError, TypeError):
                 pass
         elif self.instance.pk and self.instance.client:
-            self.fields['projet'].queryset = self.fields['projet'].queryset.filter(client=self.instance.client) 
+            self.fields['projet'].queryset = self.fields['projet'].queryset.filter(client=self.instance.client)
+
+class StatutFactureForm(forms.ModelForm):
+    class Meta:
+        model = Facture
+        fields = ['statut_paiement']
+        widgets = {
+            'statut_paiement': forms.Select(attrs={'class': 'form-select'})
+        } 

@@ -53,12 +53,33 @@ facture.numero }}{% endblock %} {% block content %}
                 >
                   {{ facture.get_statut_paiement_display }}
                 </span>
+                <form method="post" action="{% url 'factures:update_statut_facture' facture.pk %}" class="mt-2">
+                  {% csrf_token %}
+                  <div class="input-group">
+                    <select name="statut_paiement" class="form-select">
+                      {% for value, label in facture.STATUT_CHOICES %}
+                      <option value="{{ value }}" {% if facture.statut_paiement == value %}selected{% endif %}>
+                        {{ label }}
+                      </option>
+                      {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary">
+                      <i class="fas fa-save"></i> Mettre à jour
+                    </button>
+                  </div>
+                </form>
               </td>
             </tr>
             <tr>
               <th>Date d'émission</th>
               <td>{{ facture.date_emission|date:"d/m/Y H:i" }}</td>
             </tr>
+            {% if facture.date_echeance %}
+            <tr>
+              <th>Date d'échéance</th>
+              <td>{{ facture.date_echeance|date:"d/m/Y" }}</td>
+            </tr>
+            {% endif %}
           </table>
         </div>
       </div>

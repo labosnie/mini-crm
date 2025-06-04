@@ -6,7 +6,7 @@ from django.views.generic import View
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.db.models import Q
 from .models import Facture
-from .forms import FactureForm
+from .forms import FactureForm, StatutFactureForm
 from projets.models import Projet
 import csv
 from reportlab.lib.pagesizes import letter
@@ -135,6 +135,29 @@ def export_csv(request):
     writer.writerow(['Numéro', 'Client', 'Projet', 'Montant', 'Date d\'émission', 'Date d\'échéance', 'Statut'])
     
     factures = Facture.objects.all()
+    
+    # Application des filtres
+    search_query = request.GET.get('q', '').strip()
+    client_id = request.GET.get('client', '').strip()
+    statut = request.GET.get('statut', '').strip()
+    date_debut = request.GET.get('date_debut', '').strip()
+    date_fin = request.GET.get('date_fin', '').strip()
+
+    if search_query:
+        factures = factures.filter(
+            Q(numero__icontains=search_query) |
+            Q(client__nom__icontains=search_query) |
+            Q(projet__titre__icontains=search_query)
+        )
+    if client_id:
+        factures = factures.filter(client_id=client_id)
+    if statut:
+        factures = factures.filter(statut_paiement=statut)
+    if date_debut:
+        factures = factures.filter(date_emission__gte=date_debut)
+    if date_fin:
+        factures = factures.filter(date_emission__lte=date_fin)
+    
     for facture in factures:
         writer.writerow([
             facture.numero,
@@ -191,3 +214,15 @@ def export_pdf(request):
     elements.append(table)
     doc.build(elements)
     return response
+
+@login_required
+def update_statut_facture(request, pk):
+    facture = get_object_or_404(Facture, pk=pk)
+    if request.method == 'POST':
+        form = StatutFactureForm(request.POST, instance=facture)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Statut de la facture mis à jour : {facture.get_statut_paiement_display()}')
+        else:
+            messages.error(request, 'Erreur lors de la mise à jour du statut')
+    return redirect('factures:facture_detail', pk=facture.pk)
