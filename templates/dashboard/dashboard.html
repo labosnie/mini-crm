@@ -50,7 +50,23 @@
   }
   .stat-card h2 {
     font-size: 2rem;
-    margin-bottom: 0;
+    margin-bottom: 0.5rem;
+  }
+  .micro-stats {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .micro-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .micro-stat-item i {
+    font-size: 0.8rem;
   }
   .chart-container {
     position: relative;
@@ -107,6 +123,16 @@
           <h2 class="animate__animated animate__fadeInUp">
             {{ chiffre_affaire|floatformat:2 }} €
           </h2>
+          <div class="micro-stats">
+            <div class="micro-stat-item">
+              <i class="fas fa-arrow-up"></i>
+              <span>{{ ca_mois_precedent|floatformat:2 }} € ce mois</span>
+            </div>
+            <div class="micro-stat-item">
+              <i class="fas fa-calendar"></i>
+              <span>{{ ca_annee|floatformat:2 }} € cette année</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -121,7 +147,16 @@
           <h2 class="animate__animated animate__fadeInUp">
             {{ factures_impayees }}
           </h2>
-          <p class="mb-0">Montant: {{ montant_impaye|floatformat:2 }} €</p>
+          <div class="micro-stats">
+            <div class="micro-stat-item">
+              <i class="fas fa-clock"></i>
+              <span>{{ factures_en_retard }} factures en retard</span>
+            </div>
+            <div class="micro-stat-item">
+              <i class="fas fa-check-circle"></i>
+              <span>{{ factures_payees_mois }} factures payées ce mois</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -136,6 +171,16 @@
           <h2 class="animate__animated animate__fadeInUp">
             {{ projets_en_cours }}
           </h2>
+          <div class="micro-stats">
+            <div class="micro-stat-item">
+              <i class="fas fa-check"></i>
+              <span>{{ projets_termines }} projets terminés</span>
+            </div>
+            <div class="micro-stat-item">
+              <i class="fas fa-hourglass-half"></i>
+              <span>{{ projets_en_attente }} projets en attente</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

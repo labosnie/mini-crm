@@ -11,11 +11,41 @@ import json
 
 @login_required
 def dashboard_views(request):
-    # Statistiques génerales
+    # Statistiques générales
     factures_impayees = Facture.objects.filter(statut_paiement='impayée').count()
     montant_impaye = Facture.objects.filter(statut_paiement='impayée').aggregate(total=Sum('montant'))['total'] or 0
     projets_en_cours = Projet.objects.filter(statut='en_cours').count()
     chiffre_affaire = Facture.objects.filter(statut_paiement='payée').aggregate(total=Sum('montant'))['total'] or 0
+
+    # Micro-statistiques pour le CA
+    debut_mois = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    debut_annee = datetime.now().replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+    
+    ca_mois_precedent = Facture.objects.filter(
+        date_emission__gte=debut_mois,
+        statut_paiement='payée'
+    ).aggregate(total=Sum('montant'))['total'] or 0
+    
+    ca_annee = Facture.objects.filter(
+        date_emission__gte=debut_annee,
+        statut_paiement='payée'
+    ).aggregate(total=Sum('montant'))['total'] or 0
+
+    # Micro-statistiques pour les factures
+    date_limite = datetime.now() - timedelta(days=30)
+    factures_en_retard = Facture.objects.filter(
+        statut_paiement='impayée',
+        date_echeance__lt=datetime.now()
+    ).count()
+    
+    factures_payees_mois = Facture.objects.filter(
+        statut_paiement='payée',
+        date_emission__gte=debut_mois
+    ).count()
+
+    # Micro-statistiques pour les projets
+    projets_termines = Projet.objects.filter(statut='termine').count()
+    projets_en_attente = Projet.objects.filter(statut='en_attente').count()
 
     # Top 5 clients
     top_clients = Client.objects.annotate(
@@ -45,6 +75,13 @@ def dashboard_views(request):
         'top_clients': top_clients,
         'ca_labels': json.dumps(ca_labels),
         'ca_data': json.dumps(ca_data),
+        # Nouvelles statistiques
+        'ca_mois_precedent': ca_mois_precedent,
+        'ca_annee': ca_annee,
+        'factures_en_retard': factures_en_retard,
+        'factures_payees_mois': factures_payees_mois,
+        'projets_termines': projets_termines,
+        'projets_en_attente': projets_en_attente,
     }
 
     return render(request, 'dashboard/dashboard.html', context)
