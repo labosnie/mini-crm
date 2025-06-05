@@ -1,10 +1,12 @@
 # Mini-CRM
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple.svg)](https://getbootstrap.com/)
 [![Status](https://img.shields.io/badge/Status-Active-success.svg)](https://github.com/votre-username/mini-crm)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/votre-username/mini-crm/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Un système de gestion de la relation client (CRM) léger et efficace, développé avec Django.
 
@@ -128,8 +130,4 @@ Pour toute question ou problème, veuillez :
 - Fournir les étapes pour reproduire le bug
 - Inclure les messages d'erreur pertinents
 
-## 🙏 Remerciements
 
-- Django pour leur excellent framework
-- Bootstrap pour l'interface utilisateur
-- La communauté open source pour leur support

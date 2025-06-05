@@ -4,8 +4,9 @@ from .models import Facture
 class FactureForm(forms.ModelForm):
     class Meta:
         model = Facture
-        fields = ['client', 'projet', 'montant', 'date_echeance', 'statut_paiement', 'notes']
+        fields = ['numero', 'client', 'projet', 'montant', 'date_echeance', 'statut_paiement', 'notes']
         widgets = {
+            'numero': forms.TextInput(attrs={'class': 'form-control'}),
             'client': forms.Select(attrs={'class': 'form-control'}),
             'projet': forms.Select(attrs={'class': 'form-control'}),
             'montant': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),

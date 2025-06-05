@@ -115,6 +115,19 @@ class Facture(models.Model):
         #Formate le nouveau numero avec des zéros devant
         return f"{annee}-{nouveau_num:03d}"
 
+    def get_statut_badge_class(self):
+        """
+        Retourne la classe CSS du badge en fonction du statut
+        """
+        statut_classes = {
+            "envoyée": "bg-primary",
+            "payée": "bg-success",
+            "en_retard": "bg-danger",
+            "annulée": "bg-secondary",
+            "brouillon": "bg-warning",
+        }
+        return statut_classes.get(self.statut_paiement, "bg-secondary")
+
 
 
 
