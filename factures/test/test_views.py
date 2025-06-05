@@ -6,6 +6,7 @@ from clients.models import Client
 from projets.models import Projet
 from django.contrib.auth.models import User
 
+
 class FactureViewTest(TestCase):
     def setUp(self):
         self.test_client = TestClient()
@@ -30,37 +31,32 @@ class FactureViewTest(TestCase):
             date_emission=timezone.now(),
             statut_paiement="envoyée",
         )
-            
+
     def test_facture_list_view(self):
         """Test la vue liste des factures"""
-        response = self.test_client.get(reverse('factures:facture_list'))
+        response = self.test_client.get(reverse("factures:facture_list"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'factures/facture_list.html')
+        self.assertTemplateUsed(response, "factures/facture_list.html")
         self.assertContains(response, "FACT-001")
 
     def test_facture_detail_view(self):
         """Test la vue détaillée d'une facture"""
         response = self.test_client.get(
-            reverse('factures:facture_detail', args=[self.facture.id])
+            reverse("factures:facture_detail", args=[self.facture.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'factures/facture_detail.html')
+        self.assertTemplateUsed(response, "factures/facture_detail.html")
         self.assertContains(response, "FACT-001")
 
     def test_facture_create_view(self):
         """Test la création d'une facture"""
         data = {
-            'numero': 'FACT-002',
-            'client': self.client_obj.id,
-            'projet': self.projet.id,
-            'montant': 2000.00,
-            'statut_paiement': 'envoyée',
+            "numero": "FACT-002",
+            "client": self.client_obj.id,
+            "projet": self.projet.id,
+            "montant": 2000.00,
+            "statut_paiement": "envoyée",
         }
-        response = self.test_client.post(reverse('factures:facture_create'), data)
+        response = self.test_client.post(reverse("factures:facture_create"), data)
         self.assertEqual(response.status_code, 302)  # Redirection après création
-        self.assertTrue(Facture.objects.filter(numero='FACT-002').exists())
-
-
-    
-            
- 
+        self.assertTrue(Facture.objects.filter(numero="FACT-002").exists())

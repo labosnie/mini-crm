@@ -4,6 +4,7 @@ from factures.models import Facture
 from clients.models import Client
 from projets.models import Projet
 
+
 class FactureModelTest(TestCase):
     def setUp(self):
         # Crée un client de test
@@ -37,5 +38,7 @@ class FactureModelTest(TestCase):
 
     def test_facture_str_method(self):
         """Test la méthode __str__ de la facture"""
-        expected_str = f"Facture {self.facture.numero} - {self.client.nom} - {self.projet.titre}"
+        expected_str = (
+            f"Facture {self.facture.numero} - {self.client.nom} - {self.projet.titre}"
+        )
         self.assertEqual(str(self.facture), expected_str)

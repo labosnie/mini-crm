@@ -6,18 +6,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('factures', '0001_initial'),
+        ("factures", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='facture',
-            name='date_echeance',
-            field=models.DateField(blank=True, help_text='Date limite de paiement', null=True),
+            model_name="facture",
+            name="date_echeance",
+            field=models.DateField(
+                blank=True, help_text="Date limite de paiement", null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='facture',
-            name='statut_paiement',
-            field=models.CharField(choices=[('envoyée', 'Envoyée'), ('payée', 'Payée'), ('en_retard', 'En retard'), ('annulée', 'Annulée'), ('brouillon', 'Brouillon')], default='envoyee', help_text='Statut du paiement de la facture', max_length=20),
+            model_name="facture",
+            name="statut_paiement",
+            field=models.CharField(
+                choices=[
+                    ("envoyée", "Envoyée"),
+                    ("payée", "Payée"),
+                    ("en_retard", "En retard"),
+                    ("annulée", "Annulée"),
+                    ("brouillon", "Brouillon"),
+                ],
+                default="envoyee",
+                help_text="Statut du paiement de la facture",
+                max_length=20,
+            ),
         ),
     ]

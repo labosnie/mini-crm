@@ -6,22 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('clients', '0002_alter_client_options_client_code_postal_client_notes_and_more'),
+        (
+            "clients",
+            "0002_alter_client_options_client_code_postal_client_notes_and_more",
+        ),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='client',
-            name='status',
+            model_name="client",
+            name="status",
         ),
         migrations.AddField(
-            model_name='client',
-            name='statut',
-            field=models.CharField(choices=[('prospect', 'Prospect'), ('actif', 'Client Actif'), ('inactif', 'Client Inactif')], default='prospect', max_length=20),
+            model_name="client",
+            name="statut",
+            field=models.CharField(
+                choices=[
+                    ("prospect", "Prospect"),
+                    ("actif", "Client Actif"),
+                    ("inactif", "Client Inactif"),
+                ],
+                default="prospect",
+                max_length=20,
+            ),
         ),
         migrations.AlterField(
-            model_name='client',
-            name='code_postal',
+            model_name="client",
+            name="code_postal",
             field=models.CharField(blank=True, max_length=10),
         ),
     ]

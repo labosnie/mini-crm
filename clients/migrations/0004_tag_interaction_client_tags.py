@@ -8,36 +8,78 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('clients', '0003_remove_client_status_client_statut_and_more'),
+        ("clients", "0003_remove_client_status_client_statut_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nom', models.CharField(max_length=50, unique=True)),
-                ('couleur', models.CharField(default='#000000', max_length=7)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nom", models.CharField(max_length=50, unique=True)),
+                ("couleur", models.CharField(default="#000000", max_length=7)),
             ],
         ),
         migrations.CreateModel(
-            name='Interaction',
+            name="Interaction",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('appel', 'Appel téléphonique'), ('email', 'Email'), ('reunion', 'Réunion'), ('note', 'Note interne')], max_length=20)),
-                ('date', models.DateTimeField(auto_now_add=True)),
-                ('description', models.TextField()),
-                ('client', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='interactions', to='clients.client')),
-                ('utilisateur', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("appel", "Appel téléphonique"),
+                            ("email", "Email"),
+                            ("reunion", "Réunion"),
+                            ("note", "Note interne"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("date", models.DateTimeField(auto_now_add=True)),
+                ("description", models.TextField()),
+                (
+                    "client",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="interactions",
+                        to="clients.client",
+                    ),
+                ),
+                (
+                    "utilisateur",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-date'],
+                "ordering": ["-date"],
             },
         ),
         migrations.AddField(
-            model_name='client',
-            name='tags',
-            field=models.ManyToManyField(blank=True, related_name='clients', to='clients.tag'),
+            model_name="client",
+            name="tags",
+            field=models.ManyToManyField(
+                blank=True, related_name="clients", to="clients.tag"
+            ),
         ),
     ]

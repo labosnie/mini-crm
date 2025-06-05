@@ -4,6 +4,7 @@ from factures.forms import FactureForm, StatutFactureForm
 from clients.models import Client
 from projets.models import Projet
 
+
 class FactureFormTest(TestCase):
     def setUp(self):
         self.client = Client.objects.create(nom="Client de test")
@@ -16,11 +17,11 @@ class FactureFormTest(TestCase):
     def test_facture_form_valid(self):
         """Test un formulaire valide est valide"""
         form_data = {
-            'numero': 'FACT-001',
-            'client': self.client.id,
-            'projet': self.projet.id,
-            'montant': 1000.00,
-            'statut_paiement': 'envoyée',
+            "numero": "FACT-001",
+            "client": self.client.id,
+            "projet": self.projet.id,
+            "montant": 1000.00,
+            "statut_paiement": "envoyée",
         }
         form = FactureForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -28,13 +29,11 @@ class FactureFormTest(TestCase):
     def test_facture_form_invalid(self):
         """Test un formualaire invalide n'est pas valide"""
         form_data = {
-            'numero': '',
-            'client': self.client.id,
-            'projet': self.projet.id,
-            'montant': -1000.00, # Montant négatif
-            'statut_paiement': 'envoyée',
+            "numero": "",
+            "client": self.client.id,
+            "projet": self.projet.id,
+            "montant": -1000.00,  # Montant négatif
+            "statut_paiement": "envoyée",
         }
         form = FactureForm(data=form_data)
         self.assertFalse(form.is_valid())
-            
-        
