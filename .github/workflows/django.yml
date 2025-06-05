@@ -64,7 +64,7 @@ jobs:
         uses: schneegans/dynamic-badges-action@v1.6.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: "824e53b85dfc084733de0fbe37e55b6c"
+          gistID: "b4dd7b29fa72e9b6b92162162015330e"
           filename: tests.json
           label: tests
           message: passing
