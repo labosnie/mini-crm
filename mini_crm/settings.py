@@ -91,6 +91,14 @@ WSGI_APPLICATION = 'mini_crm.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+# Configuration PostgreSQL pour la production/CI
+if os.environ.get('DATABASE_URL'):
+    DATABASES['default'] = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('POSTGRES_DB', 'mini_crm'),
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
@@ -98,7 +106,6 @@ DATABASES = {
         'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
         'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
-}
 
 
 # Password validation
