@@ -4,7 +4,7 @@
 [![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple.svg)](https://getbootstrap.com/)
 [![Status](https://img.shields.io/badge/Status-Active-success.svg)](https://github.com/votre-username/mini-crm)
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/votre-username/mini-crm/actions)
+[![Tests](https://github.com/labosnie/mini-crm/actions/workflows/django.yml/badge.svg)](https://github.com/labosnie/mini-crm/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
@@ -132,6 +132,6 @@ Pour toute question ou problème, veuillez :
 
 # Mini CRM
 
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![Tests](https://github.com/labosnie/mini-crm/actions/workflows/django.yml/badge.svg)
 
 Un mini CRM développé avec Django pour gérer vos clients, projets et factures.

@@ -95,18 +95,8 @@ DATABASES = {
     }
 }
 
-# Configuration PostgreSQL pour la production/CI
 if os.environ.get("DATABASE_URL"):
     DATABASES["default"] = dj_database_url.parse(os.environ.get("DATABASE_URL"))
-else:
-    DATABASES["default"] = {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "mini_crm"),
-        "USER": os.environ.get("POSTGRES_USER", "postgres"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "postgres"),
-        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
-        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-    }
 
 
 # Password validation

@@ -53,13 +53,3 @@ jobs:
           DEBUG: "False"
         run: |
           python manage.py test
-
-      - name: Update README with test badge
-        if: success()
-        run: |
-          echo "![Tests](https://img.shields.io/badge/tests-passing-brightgreen)" >> README.md
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          git add README.md
-          git commit -m "Update test badge"
-          git push
