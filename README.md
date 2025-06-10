@@ -130,4 +130,8 @@ Pour toute question ou problème, veuillez :
 - Fournir les étapes pour reproduire le bug
 - Inclure les messages d'erreur pertinents
 
+# Mini CRM
 
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+
+Un mini CRM développé avec Django pour gérer vos clients, projets et factures.
