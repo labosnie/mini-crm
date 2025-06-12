@@ -17,7 +17,7 @@ class ClientModelTest(TestCase):
             code_postal="75001",
             pays="France",
             statut="actif",
-            notes="Client important"
+            notes="Client important",
         )
 
     def test_client_creation(self):
@@ -37,9 +37,7 @@ class ClientModelTest(TestCase):
     def test_client_without_prenom(self):
         """Test la méthode __str__ du client sans prénom"""
         client = Client.objects.create(
-            nom="Martin",
-            email="martin@example.com",
-            statut="prospect"
+            nom="Martin", email="martin@example.com", statut="prospect"
         )
         self.assertEqual(str(client), "Martin")
 
@@ -48,22 +46,18 @@ class InteractionModelTest(TestCase):
     def setUp(self):
         # Crée un utilisateur de test
         self.user = User.objects.create_user(
-            username="testuser",
-            password="testpassword"
+            username="testuser", password="testpassword"
         )
-        
+
         # Crée un client de test
-        self.client = Client.objects.create(
-            nom="Test",
-            email="test@example.com"
-        )
-        
+        self.client = Client.objects.create(nom="Test", email="test@example.com")
+
         # Crée une interaction de test
         self.interaction = Interaction.objects.create(
             client=self.client,
             type="appel",
             description="Appel de suivi",
-            utilisateur=self.user
+            utilisateur=self.user,
         )
 
     def test_interaction_creation(self):
@@ -79,7 +73,7 @@ class InteractionModelTest(TestCase):
             client=self.client,
             type="email",
             description="Email de suivi",
-            utilisateur=self.user
+            utilisateur=self.user,
         )
         interactions = Interaction.objects.all()
-        self.assertEqual(interactions[0], interaction2)  # La plus récente en premier 
+        self.assertEqual(interactions[0], interaction2)  # La plus récente en premier

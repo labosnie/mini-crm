@@ -15,7 +15,7 @@ class ClientFormTest(TestCase):
             "code_postal": "75001",
             "pays": "France",
             "statut": "actif",
-            "notes": "Client important"
+            "notes": "Client important",
         }
         form = ClientForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -27,7 +27,7 @@ class ClientFormTest(TestCase):
             "prenom": "Jean",
             "email": "email_invalide",  # Email invalide
             "telephone": "0123456789",
-            "statut": "actif"
+            "statut": "actif",
         }
         form = ClientForm(data=form_data)
         self.assertFalse(form.is_valid())
@@ -38,7 +38,7 @@ class ClientFormTest(TestCase):
         form_data = {
             "nom": "",  # Champ obligatoire vide
             "email": "",  # Champ obligatoire vide
-            "statut": "actif"
+            "statut": "actif",
         }
         form = ClientForm(data=form_data)
         self.assertFalse(form.is_valid())
@@ -50,8 +50,8 @@ class ClientFormTest(TestCase):
         form_data = {
             "nom": "Dupont",
             "email": "jean.dupont@example.com",
-            "statut": "actif"
+            "statut": "actif",
             # Les autres champs sont optionnels
         }
         form = ClientForm(data=form_data)
-        self.assertTrue(form.is_valid()) 
+        self.assertTrue(form.is_valid())
