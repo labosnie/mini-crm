@@ -6,3 +6,5 @@ Pillow>=10.0.0
 django-crispy-forms>=2.0
 crispy-bootstrap5>=0.7
 dj-database-url>=1.0.0
+django-allauth>=0.57.0
+reportlab>=4.0.8
