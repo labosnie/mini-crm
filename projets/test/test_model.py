@@ -8,8 +8,7 @@ class ProjetModelTest(TestCase):
     def setUp(self):
         # Crée un client de test
         self.client = Client.objects.create(
-            nom="Client de test",
-            email="client@example.com"
+            nom="Client de test", email="client@example.com"
         )
 
         # Crée un projet de test
@@ -19,7 +18,7 @@ class ProjetModelTest(TestCase):
             client=self.client,
             date_debut=timezone.now().date(),
             statut="en_cours",
-            montant=1000.00
+            montant=1000.00,
         )
 
     def test_projet_creation(self):
@@ -33,4 +32,4 @@ class ProjetModelTest(TestCase):
     def test_projet_str_method(self):
         """Test la méthode __str__ du projet"""
         expected_str = "Projet de test"
-        self.assertEqual(str(self.projet), expected_str) 
+        self.assertEqual(str(self.projet), expected_str)

@@ -10,15 +10,13 @@ class ProjetViewTest(TestCase):
     def setUp(self):
         self.test_client = TestClient()
         self.user = User.objects.create_user(
-            username="testuser",
-            password="testpassword"
+            username="testuser", password="testpassword"
         )
         self.test_client.login(username="testuser", password="testpassword")
 
         # Crée un client de test
         self.client_obj = Client.objects.create(
-            nom="Client de test",
-            email="client@example.com"
+            nom="Client de test", email="client@example.com"
         )
 
         # Crée un projet de test
@@ -28,7 +26,7 @@ class ProjetViewTest(TestCase):
             client=self.client_obj,
             date_debut=timezone.now().date(),
             statut="en_cours",
-            montant=1000.00
+            montant=1000.00,
         )
 
     def test_projet_list_view(self):
@@ -55,7 +53,7 @@ class ProjetViewTest(TestCase):
             "client": self.client_obj.id,
             "date_debut": timezone.now().date(),
             "statut": "en_cours",
-            "montant": 2000.00
+            "montant": 2000.00,
         }
         response = self.test_client.post(reverse("projets:projet_create"), data)
         self.assertEqual(response.status_code, 302)  # Redirection après création
@@ -69,11 +67,10 @@ class ProjetViewTest(TestCase):
             "client": self.client_obj.id,
             "date_debut": timezone.now().date(),
             "statut": "en_cours",
-            "montant": 1500.00
+            "montant": 1500.00,
         }
         response = self.test_client.post(
-            reverse("projets:projet_update", args=[self.projet.id]),
-            data
+            reverse("projets:projet_update", args=[self.projet.id]), data
         )
         self.assertEqual(response.status_code, 302)
         updated_projet = Projet.objects.get(id=self.projet.id)
@@ -85,4 +82,4 @@ class ProjetViewTest(TestCase):
             reverse("projets:projet_delete", args=[self.projet.id])
         )
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(Projet.objects.filter(id=self.projet.id).exists()) 
+        self.assertFalse(Projet.objects.filter(id=self.projet.id).exists())

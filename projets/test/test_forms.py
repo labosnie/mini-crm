@@ -7,8 +7,7 @@ from django.utils import timezone
 class ProjetFormTest(TestCase):
     def setUp(self):
         self.client = Client.objects.create(
-            nom="Client de test",
-            email="client@example.com"
+            nom="Client de test", email="client@example.com"
         )
 
     def test_projet_form_valid(self):
@@ -19,7 +18,7 @@ class ProjetFormTest(TestCase):
             "client": self.client.id,
             "date_debut": timezone.now().date(),
             "statut": "en_cours",
-            "montant": 1000.00
+            "montant": 1000.00,
         }
         form = ProjetForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -32,9 +31,9 @@ class ProjetFormTest(TestCase):
             "client": self.client.id,
             "date_debut": timezone.now().date(),
             "statut": "en_cours",
-            "montant": -1000.00  # Montant négatif
+            "montant": -1000.00,  # Montant négatif
         }
         form = ProjetForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn("titre", form.errors)
-        self.assertIn("montant", form.errors) 
+        self.assertIn("montant", form.errors)
