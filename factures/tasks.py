@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import Facture
 
+
 def relancer_factures_en_retard():
     """
     Fonction qui identifie et relance les factures en retard.
@@ -12,13 +13,12 @@ def relancer_factures_en_retard():
     """
     # Récupérer toutes les factures en retard
     factures_en_retard = Facture.objects.filter(
-        statut_paiement='envoyée',
-        date_echeance__lt=timezone.now().date()
+        statut_paiement="envoyée", date_echeance__lt=timezone.now().date()
     )
 
     for facture in factures_en_retard:
         # Mettre à jour le statut de la facture
-        facture.statut_paiement = 'en_retard'
+        facture.statut_paiement = "en_retard"
         facture.save()
 
         # Envoyer un email de relance
@@ -42,4 +42,4 @@ def relancer_factures_en_retard():
             settings.DEFAULT_FROM_EMAIL,
             [facture.client.email],
             fail_silently=False,
-        ) 
+        )

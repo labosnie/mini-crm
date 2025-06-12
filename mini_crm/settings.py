@@ -162,10 +162,13 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 
 # Configuration Email
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@votrecrm.com'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "noreply@votrecrm.com"
 
 # Configuration des tâches planifiées
 CRONJOBS = [
-    ('0 9 * * *', 'factures.tasks.relancer_factures_en_retard')  # Exécution tous les jours à 9h
+    (
+        "0 9 * * *",
+        "factures.tasks.relancer_factures_en_retard",
+    )  # Exécution tous les jours à 9h
 ]
