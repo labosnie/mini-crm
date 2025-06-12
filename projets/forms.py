@@ -29,3 +29,9 @@ class ProjetForm(forms.ModelForm):
                 attrs={"class": "form-control", "step": "0.01"}
             ),
         }
+
+    def clean_montant(self):
+        montant = self.cleaned_data.get('montant')
+        if montant is not None and montant < 0:
+            raise forms.ValidationError("Le montant ne peut pas être négatif.")
+        return montant
