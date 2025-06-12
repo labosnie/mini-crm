@@ -14,11 +14,11 @@ class ClientForm(forms.ModelForm):
             "ville",
             "code_postal",
             "pays",
-            "status",
+            "statut",
             "notes",
         ]
         widgets = {
             "notes": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
             "adresse": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
-            "status": forms.Select(attrs={"class": "form-control"}),
+            "statut": forms.Select(attrs={"class": "form-control"}),
         }
