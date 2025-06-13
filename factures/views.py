@@ -86,7 +86,9 @@ def facture_detail(request, pk):
         return render(request, "factures/facture_detail.html", {"facture": facture})
     except Exception as e:
         messages.error(request, f"Erreur lors de l'affichage de la facture : {str(e)}")
-        print(f"Erreur lors de l'affichage de la facture : {str(e)}")  # Log pour le débogage
+        print(
+            f"Erreur lors de l'affichage de la facture : {str(e)}"
+        )  # Log pour le débogage
         return redirect("factures:facture_list")
 
 
@@ -101,16 +103,24 @@ def facture_create(request):
                 if not facture.numero:
                     facture.numero = facture.generer_numero()
                 facture.save()
-                messages.success(request, f"Facture {facture.numero} créée avec succès.")
+                messages.success(
+                    request, f"Facture {facture.numero} créée avec succès."
+                )
                 return redirect("factures:facture_detail", pk=facture.pk)
             except Exception as e:
-                messages.error(request, f"Erreur lors de la création de la facture : {str(e)}")
-                print(f"Erreur lors de la création de la facture : {str(e)}")  # Log pour le débogage
+                messages.error(
+                    request, f"Erreur lors de la création de la facture : {str(e)}"
+                )
+                print(
+                    f"Erreur lors de la création de la facture : {str(e)}"
+                )  # Log pour le débogage
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-                    print(f"Erreur de validation - {field}: {error}")  # Log pour le débogage
+                    print(
+                        f"Erreur de validation - {field}: {error}"
+                    )  # Log pour le débogage
     else:
         form = FactureForm()
     return render(request, "factures/facture_form.html", {"form": form})
