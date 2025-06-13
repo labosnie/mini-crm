@@ -1,0 +1,298 @@
+{% extends "base.html" %} {% load static %} {% block extra_css %}
+<style>
+  .progress {
+    height: 25px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  .progress-bar {
+    color: white;
+    text-align: center;
+    line-height: 25px;
+    font-weight: bold;
+    transition: width 0.6s ease;
+  }
+  .progress-bar.low {
+    background-color: #f44336;
+  }
+  .progress-bar.medium {
+    background-color: #ff9800;
+  }
+  .progress-bar.high {
+    background-color: #4caf50;
+  }
+  .progress-bar[data-width] {
+    width: var(--width);
+  }
+  .card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+  }
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .card-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+  #caChart {
+    min-height: 300px;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container-fluid">
+  <!-- KPIs principaux -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h5 class="card-title">Chiffre d'affaires</h5>
+          <h2 class="card-text">{{ chiffre_affaire|floatformat:2 }} €</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <h5 class="card-title">Factures impayées</h5>
+          <h2 class="card-text">{{ factures_impayees }}</h2>
+          <p class="card-text">Montant: {{ montant_impaye|floatformat:2 }} €</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <h5 class="card-title">Projets en cours</h5>
+          <h2 class="card-text">{{ projets_en_cours }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white">
+        <div class="card-body">
+          <h5 class="card-title">CA du mois</h5>
+          <h2 class="card-text">{{ ca_mois|floatformat:2 }} €</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs secondaires -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Taux de conversion</h5>
+          <div class="progress">
+            <div
+              class="progress-bar {% if taux_conversion < 30 %}low{% elif taux_conversion < 70 %}medium{% else %}high{% endif %}"
+              role="progressbar"
+              data-width="{{ taux_conversion }}"
+              style="--width: {{ taux_conversion }}%"
+              aria-valuenow="{{ taux_conversion }}"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              {{ taux_conversion }}%
+            </div>
+          </div>
+          <small class="text-muted">
+            {{ factures_payees_mois }} factures payées sur {{ factures_mois }}
+            émises ce mois
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Délai moyen de paiement</h5>
+          <h2 class="card-text">{{ delai_paiement }} jours</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Factures émises ce mois</h5>
+          <h2 class="card-text">{{ factures_mois }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top clients -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Top 5 clients (par CA)</h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Nombre de factures</th>
+                <th>Montant total (€)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for client in top_clients %}
+              <tr>
+                <td>{{ client.nom }}</td>
+                <td>{{ client.total_factures }}</td>
+                <td>{{ client.montant_total|floatformat:2 }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="3">Aucun client</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Graphique d'évolution du CA -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            Évolution du chiffre d'affaires (6 derniers mois)
+          </h5>
+          <!-- Debug info -->
+          <div class="alert alert-info">
+            <p>Labels: {{ ca_labels }}</p>
+            <p>Data: {{ ca_data }}</p>
+          </div>
+          <canvas id="caChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js pour le graphique -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    try {
+      const ctx = document.getElementById("caChart").getContext("2d");
+      const rawLabels = "{{ ca_labels|safe }}";
+      const rawData = "{{ ca_data|safe }}";
+
+      console.log("Raw Labels:", rawLabels);
+      console.log("Raw Data:", rawData);
+
+      const labels = JSON.parse(rawLabels);
+      const data = JSON.parse(rawData);
+
+      console.log("Parsed Labels:", labels);
+      console.log("Parsed Data:", data);
+
+      if (!Array.isArray(labels) || !Array.isArray(data)) {
+        console.error("Les données ne sont pas des tableaux valides");
+        return;
+      }
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, "rgba(54, 162, 235, 0.2)");
+      gradient.addColorStop(1, "rgba(54, 162, 235, 0)");
+
+      const caChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Chiffre d'affaires (€)",
+              data: data,
+              backgroundColor: gradient,
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 2,
+              pointBackgroundColor: "rgba(54, 162, 235, 1)",
+              pointBorderColor: "#fff",
+              pointBorderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              tension: 0.4,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              padding: 12,
+              titleFont: {
+                size: 14,
+              },
+              bodyFont: {
+                size: 14,
+              },
+              callbacks: {
+                label: function (context) {
+                  return new Intl.NumberFormat("fr-FR", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(context.parsed.y);
+                },
+              },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: "rgba(0, 0, 0, 0.1)",
+              },
+              ticks: {
+                callback: function (value) {
+                  return new Intl.NumberFormat("fr-FR", {
+                    style: "currency",
+                    currency: "EUR",
+                    maximumFractionDigits: 0,
+                  }).format(value);
+                },
+              },
+            },
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+          },
+          animation: {
+            duration: 2000,
+            easing: "easeInOutQuart",
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Erreur lors de la création du graphique:", error);
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const progressBar = document.querySelector(".progress-bar");
+    if (progressBar) {
+      progressBar.style.width = progressBar.dataset.width + "%";
+    }
+  });
+</script>
+{% endblock %}

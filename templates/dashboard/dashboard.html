@@ -195,7 +195,10 @@
             <i class="fas fa-chart-line me-2"></i>Évolution du Chiffre
             d'Affaires
           </h5>
-          <div class="chart-container">
+          <div
+            class="chart-container"
+            style="position: relative; height: 300px"
+          >
             <canvas id="caChart"></canvas>
           </div>
         </div>
@@ -233,81 +236,105 @@
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var ca_labels = {{ ca_labels|safe }};
-    var ca_data = {{ ca_data|safe }};
-    var ctx = document.getElementById("caChart").getContext("2d");
+  document.addEventListener("DOMContentLoaded", function () {
+    try {
+      const ctx = document.getElementById("caChart").getContext("2d");
 
-    var gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(54, 162, 235, 0.2)');
-    gradient.addColorStop(1, 'rgba(54, 162, 235, 0)');
+      // Récupération des données depuis Django
+      const labels = JSON.parse(
+        document.getElementById("ca_labels").textContent
+      );
+      const data = JSON.parse(document.getElementById("ca_data").textContent);
 
-    var caChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ca_labels,
-        datasets: [{
-          label: "Chiffre d'Affaires",
-          data: ca_data,
-          backgroundColor: gradient,
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 2,
-          pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          tension: 0.4,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            padding: 12,
-            titleFont: {
-              size: 14
+      console.log("Labels:", labels);
+      console.log("Data:", data);
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, "rgba(54, 162, 235, 0.2)");
+      gradient.addColorStop(1, "rgba(54, 162, 235, 0)");
+
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Chiffre d'Affaires",
+              data: data,
+              backgroundColor: gradient,
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 2,
+              pointBackgroundColor: "rgba(54, 162, 235, 1)",
+              pointBorderColor: "#fff",
+              pointBorderWidth: 2,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              tension: 0.4,
+              fill: true,
             },
-            bodyFont: {
-              size: 14
-            },
-            callbacks: {
-              label: function(context) {
-                return context.parsed.y.toFixed(2) + ' €';
-              }
-            }
-          }
+          ],
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: {
-              color: 'rgba(0, 0, 0, 0.1)'
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
             },
-            ticks: {
-              callback: function(value) {
-                return value.toFixed(2) + ' €';
-              }
-            }
+            tooltip: {
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              padding: 12,
+              titleFont: {
+                size: 14,
+              },
+              bodyFont: {
+                size: 14,
+              },
+              callbacks: {
+                label: function (context) {
+                  return new Intl.NumberFormat("fr-FR", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(context.parsed.y);
+                },
+              },
+            },
           },
-          x: {
-            grid: {
-              display: false
-            }
-          }
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: "rgba(0, 0, 0, 0.1)",
+              },
+              ticks: {
+                callback: function (value) {
+                  return new Intl.NumberFormat("fr-FR", {
+                    style: "currency",
+                    currency: "EUR",
+                    maximumFractionDigits: 0,
+                  }).format(value);
+                },
+              },
+            },
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+          },
+          animation: {
+            duration: 2000,
+            easing: "easeInOutQuart",
+          },
         },
-        animation: {
-          duration: 2000,
-          easing: 'easeInOutQuart'
-        }
-      }
-    });
+      });
+    } catch (error) {
+      console.error("Erreur lors de la création du graphique:", error);
+    }
   });
 </script>
+
+<!-- Données cachées pour le JavaScript -->
+<div id="ca_labels" style="display: none">{{ ca_labels|safe }}</div>
+<div id="ca_data" style="display: none">{{ ca_data|safe }}</div>
 {% endblock %} {% endblock content %}

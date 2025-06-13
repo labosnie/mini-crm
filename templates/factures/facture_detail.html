@@ -1,13 +1,21 @@
-{% extends 'base.html' %} {% block title %}Détails de la Facture - {{
-facture.numero }}{% endblock %} {% block content %}
+{% extends 'base.html' %} 
+{% block title %}
+Détails de la Facture 
+{{facture.numero }}
+{% endblock %} 
+{% block content %}
 <div class="container mt-4">
+  {% if messages %} {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %} {% endif %}
+
   <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-      <h2 class="mb-0">Détails de la Facture</h2>
+      <h2 class="mb-0">Facture {{ facture.numero }}</h2>
       <div>
         <a
           href="{% url 'factures:facture_update' facture.pk %}"
-          class="btn btn-warning"
+          class="btn btn-primary"
         >
           <i class="fas fa-edit"></i> Modifier
         </a>
@@ -22,29 +30,35 @@ facture.numero }}{% endblock %} {% block content %}
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
-          <h3>Informations Générales</h3>
+          <h3>Informations générales</h3>
           <table class="table">
             <tr>
-              <th>Numéro</th>
-              <td>{{ facture.numero }}</td>
-            </tr>
-            <tr>
-              <th>Client</th>
+              <th>Client :</th>
               <td>{{ facture.client.nom }}</td>
             </tr>
             <tr>
-              <th>Projet</th>
+              <th>Projet :</th>
               <td>{{ facture.projet.titre }}</td>
             </tr>
             <tr>
-              <th>Montant</th>
+              <th>Montant :</th>
               <td>{{ facture.montant }} €</td>
             </tr>
             <tr>
-              <th>Statut</th>
+              <th>Date d'émission :</th>
+              <td>{{ facture.date_emission|date:"d/m/Y" }}</td>
+            </tr>
+            <tr>
+              <th>Date d'échéance :</th>
+              <td>
+                {{ facture.date_echeance|date:"d/m/Y"|default:"Non définie" }}
+              </td>
+            </tr>
+            <tr>
+              <th>Statut :</th>
               <td>
                 <span
-                  class="badge {{ facture.get_statut_badge_class }}"
+                  class="badge {% if facture.statut_paiement == 'payée' %}bg-success {% elif facture.statut_paiement == 'en_retard' %}bg-danger {% elif facture.statut_paiement == 'envoyée' %}bg-warning {% else %}bg-secondary{% endif %}"
                 >
                   {{ facture.get_statut_paiement_display }}
                 </span>
@@ -53,53 +67,20 @@ facture.numero }}{% endblock %} {% block content %}
           </table>
         </div>
         <div class="col-md-6">
-          <h3>Dates</h3>
-          <table class="table">
-            <tr>
-              <th>Date d'émission</th>
-              <td>{{ facture.date_emission|date:"d/m/Y H:i" }}</td>
-            </tr>
-            <tr>
-              <th>Date d'échéance</th>
-              <td>{{ facture.date_echeance|date:"d/m/Y"|default:"Non définie" }}</td>
-            </tr>
-          </table>
-
-          {% if facture.notes %}
           <h3>Notes</h3>
           <div class="card">
             <div class="card-body">
-              {{ facture.notes|linebreaks }}
+              {{ facture.notes|default:"Aucune note"|linebreaks }}
             </div>
           </div>
-          {% endif %}
         </div>
       </div>
-
-      <!-- Mise à jour du statut -->
-      <div class="mt-4">
-        <h3>Mettre à jour le statut</h3>
-        <form method="post" action="{% url 'factures:update_statut_facture' facture.pk %}" class="d-flex gap-2">
-          {% csrf_token %}
-          <select name="statut_paiement" class="form-select">
-            {% for value, label in facture.STATUT_CHOICES %}
-            <option value="{{ value }}" {% if facture.statut_paiement == value %}selected{% endif %}>
-              {{ label }}
-            </option>
-            {% endfor %}
-          </select>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Mettre à jour
-          </button>
-        </form>
-      </div>
     </div>
-  </div>
-
-  <div class="mt-4">
-    <a href="{% url 'factures:facture_list' %}" class="btn btn-secondary">
-      <i class="fas fa-arrow-left"></i> Retour à la liste
-    </a>
+    <div class="card-footer">
+      <a href="{% url 'factures:facture_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour à la liste
+      </a>
+    </div>
   </div>
 </div>
 {% endblock %}

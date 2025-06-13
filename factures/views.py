@@ -80,8 +80,14 @@ def facture_list(request):
 
 @login_required
 def facture_detail(request, pk):
-    facture = get_object_or_404(Facture, pk=pk)
-    return render(request, "factures/facture_detail.html", {"facture": facture})
+    try:
+        facture = get_object_or_404(Facture, pk=pk)
+        print(f"Facture trouvée : {facture.numero}")  # Log pour le débogage
+        return render(request, "factures/facture_detail.html", {"facture": facture})
+    except Exception as e:
+        messages.error(request, f"Erreur lors de l'affichage de la facture : {str(e)}")
+        print(f"Erreur lors de l'affichage de la facture : {str(e)}")  # Log pour le débogage
+        return redirect("factures:facture_list")
 
 
 @login_required
@@ -89,9 +95,22 @@ def facture_create(request):
     if request.method == "POST":
         form = FactureForm(request.POST)
         if form.is_valid():
-            facture = form.save()
-            messages.success(request, "Facture créée avec succès.")
-            return redirect("factures:facture_detail", pk=facture.pk)
+            try:
+                facture = form.save(commit=False)
+                # Générer le numéro de facture si non fourni
+                if not facture.numero:
+                    facture.numero = facture.generer_numero()
+                facture.save()
+                messages.success(request, f"Facture {facture.numero} créée avec succès.")
+                return redirect("factures:facture_detail", pk=facture.pk)
+            except Exception as e:
+                messages.error(request, f"Erreur lors de la création de la facture : {str(e)}")
+                print(f"Erreur lors de la création de la facture : {str(e)}")  # Log pour le débogage
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+                    print(f"Erreur de validation - {field}: {error}")  # Log pour le débogage
     else:
         form = FactureForm()
     return render(request, "factures/facture_form.html", {"form": form})

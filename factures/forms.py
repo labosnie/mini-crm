@@ -6,7 +6,6 @@ class FactureForm(forms.ModelForm):
     class Meta:
         model = Facture
         fields = [
-            "numero",
             "client",
             "projet",
             "montant",
@@ -15,7 +14,6 @@ class FactureForm(forms.ModelForm):
             "notes",
         ]
         widgets = {
-            "numero": forms.TextInput(attrs={"class": "form-control"}),
             "client": forms.Select(attrs={"class": "form-control"}),
             "projet": forms.Select(attrs={"class": "form-control"}),
             "montant": forms.NumberInput(
@@ -43,6 +41,18 @@ class FactureForm(forms.ModelForm):
             self.fields["projet"].queryset = self.fields["projet"].queryset.filter(
                 client=self.instance.client
             )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        client = cleaned_data.get("client")
+        projet = cleaned_data.get("projet")
+
+        if client and projet and projet.client != client:
+            raise forms.ValidationError(
+                "Le projet sélectionné n'appartient pas au client choisi."
+            )
+
+        return cleaned_data
 
 
 class StatutFactureForm(forms.ModelForm):
