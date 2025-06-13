@@ -97,23 +97,21 @@ def facture_create(request):
     if request.method == "POST":
         form = FactureForm(request.POST)
         if form.is_valid():
-            try:
-                facture = form.save(commit=False)
-                # Générer le numéro de facture si non fourni
-                if not facture.numero:
-                    facture.numero = facture.generer_numero()
-                facture.save()
-                messages.success(
-                    request, f"Facture {facture.numero} créée avec succès."
-                )
-                return redirect("factures:facture_detail", pk=facture.pk)
-            except Exception as e:
-                messages.error(
-                    request, f"Erreur lors de la création de la facture : {str(e)}"
-                )
-                print(
-                    f"Erreur lors de la création de la facture : {str(e)}"
-                )  # Log pour le débogage
+            facture = form.save(commit=False)
+            # Si aucun numéro n'est fourni, en générer un
+            if not facture.numero:
+                dernier_numero = Facture.objects.order_by("-numero").first()
+                if dernier_numero and dernier_numero.numero.startswith("FACT-"):
+                    try:
+                        numero = int(dernier_numero.numero.split("-")[1]) + 1
+                    except (IndexError, ValueError):
+                        numero = 1
+                else:
+                    numero = 1
+                facture.numero = f"FACT-{numero:03d}"
+            facture.save()
+            messages.success(request, "Facture créée avec succès.")
+            return redirect("factures:facture_detail", pk=facture.pk)
         else:
             for field, errors in form.errors.items():
                 for error in errors:

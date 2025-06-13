@@ -42,6 +42,12 @@ class FactureForm(forms.ModelForm):
                 client=self.instance.client
             )
 
+    def clean_montant(self):
+        montant = self.cleaned_data.get("montant")
+        if montant <= 0:
+            raise forms.ValidationError("Le montant doit être supérieur à 0")
+        return montant
+
     def clean(self):
         cleaned_data = super().clean()
         client = cleaned_data.get("client")
