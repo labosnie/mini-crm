@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container mt-4">
+  <h2>Mes Notifications</h2>
+
+  <div class="row">
+    <div class="col-12">
+      {% if notifications %}
+      <div class="list-group">
+        {% for notification in notifications %}
+        <div
+          class="list-group-item {% if not notification.lu %}list-group-item-primary{% endif %}"
+        >
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ notification.get_type_display }}</h5>
+            <small>{{ notification.date_creation|date:"d/m/Y H:i" }}</small>
+          </div>
+          <p class="mb-1">{{ notification.message }}</p>
+          {% if not notification.lu %}
+          <a
+            href="{% url 'notifications:marquer_lu' notification.id %}"
+            class="btn btn-sm btn-outline-primary"
+          >
+            Marquer comme lu
+          </a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="alert alert-info">Vous n'avez aucune notification.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

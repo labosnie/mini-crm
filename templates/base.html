@@ -12,6 +12,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
       rel="stylesheet"
     />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     {% block extra_css %}{% endblock %}
   </head>
   <body>
@@ -61,6 +63,22 @@
                 href="{% url 'factures:facture_list' %}"
               >
                 <i class="fas fa-file-invoice"></i> Factures
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link position-relative"
+                href="{% url 'notifications:liste' %}"
+              >
+                Notifications
+                {% with unread_count=request.user.notification_set.filter.count %}
+                {% if unread_count > 0 %}
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                >
+                  {{ unread_count }}
+                </span>
+                {% endif %} {% endwith %}
               </a>
             </li>
           </ul>

@@ -1,0 +1,10 @@
+14/06/2025 15:26:32,03 - DÃ©marrage de la tÃ¢che 
+Démarrage de la relance des factures à 2025-06-14 13:26:33.132450+00:00
+Relance des factures terminée avec succès
+14/06/2025 15:26:33,16 - Fin de la tÃ¢che 
+ 
+15/06/2025 14:02:20,52 - DÃ©marrage de la tÃ¢che 
+Démarrage de la relance des factures à 2025-06-15 12:02:21.478342+00:00
+Relance des factures terminée avec succès
+15/06/2025 14:02:21,52 - Fin de la tÃ¢che 
+ 

@@ -1,0 +1,35 @@
+/* Styles pour les notifications */
+.list-group-item-primary {
+  background-color: #e3f2fd;
+  border-color: #bbdefb;
+}
+
+.badge {
+  font-size: 0.7em;
+  padding: 0.35em 0.65em;
+}
+
+/* Style pour les notifications non lues */
+.notification-unread {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+/* Style pour les notifications lues */
+.notification-read {
+  background-color: #ffffff;
+  border-left: 4px solid #e0e0e0;
+}
+
+/* Style pour le compteur de notifications */
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  background-color: #f44336;
+  color: white;
+  border-radius: 50%;
+  padding: 0.25em 0.5em;
+  font-size: 0.75em;
+}

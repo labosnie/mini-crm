@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django_crontab",
+    "notifications.apps.NotificationsConfig",
     # Applications tierces
     "allauth",
     "allauth.account",
@@ -52,7 +54,7 @@ INSTALLED_APPS = [
     "projets",
     "factures",
     "dashboard",
-    "django_crontab",
+    
 ]
 
 MIDDLEWARE = [
@@ -134,7 +136,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -172,3 +177,11 @@ CRONJOBS = [
         "factures.tasks.relancer_factures_en_retard",
     )  # Exécution tous les jours à 9h
 ]
+
+# Configuration Celery
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
