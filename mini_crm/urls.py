@@ -27,5 +27,5 @@ urlpatterns = [
     path("factures/", include("factures.urls")),
     path("", RedirectView.as_view(url="factures/", permanent=True)),
     path("dashboard/", include("mini_crm.dashboard.urls")),
-    path('notifications/', include('notifications.urls')),
+    path("notifications/", include("notifications.urls")),
 ]
