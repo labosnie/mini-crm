@@ -127,3 +127,8 @@ class Facture(models.Model):
             "brouillon": "bg-warning",
         }
         return statut_classes.get(self.statut_paiement, "bg-secondary")
+
+    def generer_pdf(self):
+        from .utils import generate_facture_pdf
+
+        return generate_facture_pdf(self)

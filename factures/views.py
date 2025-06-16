@@ -3,7 +3,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import (
+    HttpResponse,
+    HttpResponseBadRequest,
+    JsonResponse,
+    FileResponse,
+    Http404,
+)
 from django.db.models import Q
 from .models import Facture
 from .forms import FactureForm, StatutFactureForm
@@ -13,6 +19,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from datetime import datetime
+import os
 
 # Create your views here.
 
@@ -305,3 +312,18 @@ def update_statut_facture(request, pk):
         else:
             messages.error(request, "Erreur lors de la mise à jour du statut")
     return redirect("factures:facture_detail", pk=facture.pk)
+
+
+@login_required
+def telecharger_facture_pdf(request, pk):
+    facture = get_object_or_404(Facture, pk=pk)
+    filepath = facture.generer_pdf()
+
+    if os.path.exists(filepath):
+        response = FileResponse(open(filepath, "rb"), content_type="application/pdf")
+        response["Content-Disposition"] = (
+            f'attachment; filename="facture_{facture.numero}.pdf"'
+        )
+        return response
+    else:
+        raise Http404("Le PDF n'a pas pu être généré")

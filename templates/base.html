@@ -70,15 +70,20 @@
                 class="nav-link position-relative"
                 href="{% url 'notifications:liste' %}"
               >
-                Notifications
-                {% with unread_count=request.user.notification_set.filter.count %}
+                Notifications {% with unread_count=request.user.notification_set.filter.count %}  
                 {% if unread_count > 0 %}
                 <span
                   class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                 >
                   {{ unread_count }}
                 </span>
-                {% endif %} {% endwith %}
+                {% endif %} 
+                {% endwith %}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'societe_edit' %}">
+                <i class="fas fa-building"></i> Mon entreprise
               </a>
             </li>
           </ul>

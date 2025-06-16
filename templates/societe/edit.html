@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% load form_extras %} {% block content %}
+<div class="container py-5" style="max-width: 800px">
+  <div class="row g-4">
+    <!-- Formulaire -->
+    <div class="col-md-7">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-gradient bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-building me-2"></i>Informations de la société
+          </h4>
+        </div>
+        <div class="card-body">
+          <form method="post" autocomplete="off">
+            {% csrf_token %} {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">{{ field.label }}</label>
+              {{ field|add_class:"form-control" }} {% if field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+              {% endif %} {% for error in field.errors %}
+              <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+            {% endfor %}
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-success px-4 shadow">
+                <i class="fas fa-save"></i> Enregistrer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Aperçu -->
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm bg-light">
+        <div class="card-header bg-white border-bottom-0">
+          <h6 class="mb-0 text-secondary">
+            <i class="fas fa-eye"></i> Aperçu PDF
+          </h6>
+        </div>
+        <div class="card-body">
+          <div>
+            <strong>{{ form.nom.value|default:"Nom de la société" }}</strong
+            ><br />
+            {{ form.adresse.value|default:"Adresse" }}<br />
+            CP {{ form.code_postal.value|default:"CP" }} {{
+            form.ville.value|default:"Ville" }}<br />
+            Tél : {{ form.telephone.value|default:"-" }}<br />
+            Email : {{ form.email.value|default:"-" }}<br />
+            SIRET : {{ form.siret.value|default:"-" }}<br />
+            TVA : {{ form.tva.value|default:"-" }}<br />
+            IBAN : {{ form.iban.value|default:"-" }}<br />
+            BIC : {{ form.bic.value|default:"-" }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

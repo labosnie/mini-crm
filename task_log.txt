@@ -1,10 +1,60 @@
+=== Tâches Planifiées ===
+Date: 2024-03-15
+Heure: 14:00
+
+[FACTURES]
+- Relance des factures en retard
+- Vérification des échéances
+
+[NOTIFICATIONS]
+- Vérification des échéances à venir
+- Détection des retards de paiement
+- Création des notifications
+
+=== Log d'exécution ===
 14/06/2025 15:26:32,03 - Démarrage de la tâche 
-D�marrage de la relance des factures � 2025-06-14 13:26:33.132450+00:00
-Relance des factures termin�e avec succ�s
+Démarrage de la relance des factures à 2025-06-14 13:26:33.132450+00:00
+Relance des factures terminée avec succès
 14/06/2025 15:26:33,16 - Fin de la tâche 
  
 15/06/2025 14:02:20,52 - Démarrage de la tâche 
-D�marrage de la relance des factures � 2025-06-15 12:02:21.478342+00:00
-Relance des factures termin�e avec succ�s
+Démarrage de la relance des factures à 2025-06-15 12:02:21.478342+00:00
+Relance des factures terminée avec succès
 15/06/2025 14:02:21,52 - Fin de la tâche 
+ 
+16/06/2025 14:05:45,25 - Démarrage de la tâche 
+Traceback (most recent call last):
+  File "C:\Users\gojak\OneDrive\Bureau\mini-crm\manage_tasks.py", line 9, in <module>
+    django.setup()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\gojak\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\__init__.py", line 19, in setup
+    configure_logging(settings.LOGGING_CONFIG, settings.LOGGING)
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\gojak\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\conf\__init__.py", line 81, in __getattr__
+    self._setup(name)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\gojak\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\conf\__init__.py", line 68, in _setup
+    self._wrapped = Settings(settings_module)
+                    ~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\gojak\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\conf\__init__.py", line 166, in __init__
+    mod = importlib.import_module(self.SETTINGS_MODULE)
+  File "C:\Users\gojak\AppData\Local\Programs\Python\Python313\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1022, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "C:\Users\gojak\OneDrive\Bureau\mini-crm\mini_crm\__init__.py", line 2, in <module>
+    from .celery import app as celery_app
+  File "C:\Users\gojak\OneDrive\Bureau\mini-crm\mini_crm\celery.py", line 3, in <module>
+    from celery import Celery
+ModuleNotFoundError: No module named 'celery'
+16/06/2025 14:05:45,93 - Fin de la tâche 
  

@@ -1,9 +1,5 @@
-{% extends 'base.html' %} 
-{% block title %}
-Détails de la Facture 
-{{facture.numero }}
-{% endblock %} 
-{% block content %}
+{% extends 'base.html' %} {% block title %} Détails de la Facture
+{{facture.numero }} {% endblock %} {% block content %}
 <div class="container mt-4">
   {% if messages %} {% for message in messages %}
   <div class="alert alert-{{ message.tags }}">{{ message }}</div>
@@ -79,6 +75,12 @@ Détails de la Facture
     <div class="card-footer">
       <a href="{% url 'factures:facture_list' %}" class="btn btn-secondary">
         <i class="fas fa-arrow-left"></i> Retour à la liste
+      </a>
+      <a
+        href="{% url 'factures:facture_pdf' facture.pk %}"
+        class="btn btn-success"
+      >
+        <i class="fas fa-file-pdf"></i> Télécharger PDF
       </a>
     </div>
   </div>

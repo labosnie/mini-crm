@@ -19,4 +19,5 @@ urlpatterns = [
     path("get-projets-client/", views.get_projets_client, name="get_projets_client"),
     path("export-csv/", views.export_csv, name="export_csv"),
     path("export-pdf/", views.export_pdf, name="export_pdf"),
+    path("facture/<int:pk>/pdf/", views.telecharger_facture_pdf, name="facture_pdf"),
 ]

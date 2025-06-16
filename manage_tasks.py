@@ -8,18 +8,28 @@ from django.utils import timezone
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mini_crm.settings")
 django.setup()
 
-# Import de la tâche
+# Import des tâches
 from factures.tasks import relancer_factures_en_retard
+from notifications.services import NotificationService
 
 
 def run_task():
-    """Exécute la tâche de relance des factures"""
-    print(f"Démarrage de la relance des factures à {timezone.now()}")
+    """Exécute les tâches planifiées"""
+    print(f"Démarrage des tâches à {timezone.now()}")
     try:
+        # Relance des factures
+        print("Démarrage de la relance des factures...")
         relancer_factures_en_retard()
         print("Relance des factures terminée avec succès")
+
+        # Vérification des notifications
+        print("Démarrage de la vérification des notifications...")
+        NotificationService.verifier_echeances()
+        NotificationService.verifier_retards()
+        print("Vérification des notifications terminée avec succès")
+
     except Exception as e:
-        print(f"Erreur lors de la relance des factures : {str(e)}")
+        print(f"Erreur lors de l'exécution des tâches : {str(e)}")
 
 
 if __name__ == "__main__":
