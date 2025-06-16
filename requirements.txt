@@ -9,4 +9,3 @@ dj-database-url>=1.0.0
 django-allauth>=0.57.0
 celery==5.5.3
 weasyprint==60.1
-django-form-extras==0.1.0
