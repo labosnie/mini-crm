@@ -22,6 +22,13 @@ from .projet_serializers import (
     ProjetStatutUpdateSerializer,
 )
 
+from .user_serializers import (
+    UserSerializer,
+    UserCreateSerializer,
+    UserUpdateSerializer,
+    ChangePasswordSerializer,
+)
+
 __all__ = [
     # Client serializers
     'ClientSerializer',
@@ -42,4 +49,10 @@ __all__ = [
     'ProjetDetailSerializer',
     'ProjetCreateUpdateSerializer',
     'ProjetStatutUpdateSerializer',
+    
+    # User serializers
+    'UserSerializer',
+    'UserCreateSerializer',
+    'UserUpdateSerializer',
+    'ChangePasswordSerializer',
 ] 

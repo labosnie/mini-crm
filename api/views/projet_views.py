@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiExample
 
 from projets.models import Projet
 from api.serializers import (
@@ -13,6 +14,45 @@ from api.serializers import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Liste des projets",
+        description="Récupère la liste paginée de tous les projets avec possibilité de filtrage et recherche",
+        tags=["projets"],
+        parameters=[
+            OpenApiParameter(name="search", description="Recherche dans titre, description, client", required=False),
+            OpenApiParameter(name="statut", description="Filtrer par statut", required=False),
+            OpenApiParameter(name="client", description="Filtrer par client", required=False),
+            OpenApiParameter(name="date_debut", description="Date de début (YYYY-MM-DD)", required=False),
+            OpenApiParameter(name="date_fin", description="Date de fin (YYYY-MM-DD)", required=False),
+        ]
+    ),
+    create=extend_schema(
+        summary="Créer un projet",
+        description="Crée un nouveau projet avec validation des données",
+        tags=["projets"],
+    ),
+    retrieve=extend_schema(
+        summary="Détails d'un projet",
+        description="Récupère les détails complets d'un projet avec ses factures",
+        tags=["projets"],
+    ),
+    update=extend_schema(
+        summary="Modifier un projet",
+        description="Met à jour complètement un projet",
+        tags=["projets"],
+    ),
+    partial_update=extend_schema(
+        summary="Modifier partiellement un projet",
+        description="Met à jour partiellement un projet",
+        tags=["projets"],
+    ),
+    destroy=extend_schema(
+        summary="Supprimer un projet",
+        description="Supprime définitivement un projet",
+        tags=["projets"],
+    ),
+)
 class ProjetViewSet(viewsets.ModelViewSet):
     """
     ViewSet pour la gestion des projets via API
@@ -50,6 +90,11 @@ class ProjetViewSet(viewsets.ModelViewSet):
         
         return queryset
 
+    @extend_schema(
+        summary="Factures d'un projet",
+        description="Récupère toutes les factures liées à un projet",
+        tags=["projets"],
+    )
     @action(detail=True, methods=['get'])
     def factures(self, request, pk=None):
         """Récupérer les factures d'un projet"""
@@ -59,6 +104,11 @@ class ProjetViewSet(viewsets.ModelViewSet):
         serializer = FactureSerializer(factures, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        summary="Mettre à jour le statut",
+        description="Met à jour uniquement le statut d'un projet",
+        tags=["projets"],
+    )
     @action(detail=True, methods=['patch'])
     def update_statut(self, request, pk=None):
         """Mettre à jour uniquement le statut d'un projet"""
@@ -70,6 +120,11 @@ class ProjetViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        summary="Projets en cours",
+        description="Récupère tous les projets en cours",
+        tags=["projets"],
+    )
     @action(detail=False, methods=['get'])
     def en_cours(self, request):
         """Récupérer les projets en cours"""
@@ -77,6 +132,11 @@ class ProjetViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(projets, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        summary="Projets terminés",
+        description="Récupère tous les projets terminés",
+        tags=["projets"],
+    )
     @action(detail=False, methods=['get'])
     def termines(self, request):
         """Récupérer les projets terminés"""
@@ -84,6 +144,11 @@ class ProjetViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(projets, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        summary="Statistiques des projets",
+        description="Récupère les statistiques globales des projets",
+        tags=["projets"],
+    )
     @action(detail=False, methods=['get'])
     def stats(self, request):
         """Statistiques des projets"""

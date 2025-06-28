@@ -30,5 +30,5 @@ urlpatterns = [
     path("notifications/", include("notifications.urls")),
     path("", include("societe.urls")),
     # API URLs
-    path("api/v1/", include("api.urls")),
+    path("api/v1/", include("api.urls", namespace="api")),
 ]

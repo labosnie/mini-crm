@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiExample
 import os
 
 from factures.models import Facture
@@ -16,6 +17,46 @@ from api.serializers import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Liste des factures",
+        description="Récupère la liste paginée de toutes les factures avec possibilité de filtrage et recherche",
+        tags=["factures"],
+        parameters=[
+            OpenApiParameter(name="search", description="Recherche dans numéro, client, projet", required=False),
+            OpenApiParameter(name="statut_paiement", description="Filtrer par statut de paiement", required=False),
+            OpenApiParameter(name="client", description="Filtrer par client", required=False),
+            OpenApiParameter(name="projet", description="Filtrer par projet", required=False),
+            OpenApiParameter(name="date_debut", description="Date de début (YYYY-MM-DD)", required=False),
+            OpenApiParameter(name="date_fin", description="Date de fin (YYYY-MM-DD)", required=False),
+        ]
+    ),
+    create=extend_schema(
+        summary="Créer une facture",
+        description="Crée une nouvelle facture avec génération automatique du numéro",
+        tags=["factures"],
+    ),
+    retrieve=extend_schema(
+        summary="Détails d'une facture",
+        description="Récupère les détails complets d'une facture",
+        tags=["factures"],
+    ),
+    update=extend_schema(
+        summary="Modifier une facture",
+        description="Met à jour complètement une facture",
+        tags=["factures"],
+    ),
+    partial_update=extend_schema(
+        summary="Modifier partiellement une facture",
+        description="Met à jour partiellement une facture",
+        tags=["factures"],
+    ),
+    destroy=extend_schema(
+        summary="Supprimer une facture",
+        description="Supprime définitivement une facture",
+        tags=["factures"],
+    ),
+)
 class FactureViewSet(viewsets.ModelViewSet):
     """
     ViewSet pour la gestion des factures via API
@@ -53,6 +94,12 @@ class FactureViewSet(viewsets.ModelViewSet):
         
         return queryset
 
+    @extend_schema(
+        summary="Télécharger PDF",
+        description="Génère et télécharge le PDF d'une facture",
+        tags=["factures"],
+        responses={200: None, 500: None}
+    )
     @action(detail=True, methods=['get'])
     def pdf(self, request, pk=None):
         """Télécharger le PDF d'une facture"""
@@ -77,6 +124,11 @@ class FactureViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    @extend_schema(
+        summary="Mettre à jour le statut",
+        description="Met à jour uniquement le statut de paiement d'une facture",
+        tags=["factures"],
+    )
     @action(detail=True, methods=['patch'])
     def update_statut(self, request, pk=None):
         """Mettre à jour uniquement le statut d'une facture"""
@@ -88,6 +140,11 @@ class FactureViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @extend_schema(
+        summary="Factures en retard",
+        description="Récupère toutes les factures en retard de paiement",
+        tags=["factures"],
+    )
     @action(detail=False, methods=['get'])
     def en_retard(self, request):
         """Récupérer les factures en retard"""
@@ -95,6 +152,11 @@ class FactureViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(factures, many=True)
         return Response(serializer.data)
 
+    @extend_schema(
+        summary="Statistiques des factures",
+        description="Récupère les statistiques globales des factures",
+        tags=["factures"],
+    )
     @action(detail=False, methods=['get'])
     def stats(self, request):
         """Statistiques des factures"""

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
+    "drf_spectacular",
     # Vos applications
     "mini_crm",
     "clients",
@@ -208,6 +209,7 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # Configuration CORS
@@ -217,3 +219,31 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Configuration drf-spectacular pour la documentation OpenAPI
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Mini-CRM API',
+    'DESCRIPTION': 'API REST pour la gestion de clients, factures et projets',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': '/api/v1/',
+    'CONTACT': {
+        'name': 'Support API',
+        'email': 'support@minicrm.com',
+    },
+    'LICENSE': {
+        'name': 'MIT License',
+    },
+    'TAGS': [
+        {'name': 'clients', 'description': 'Gestion des clients'},
+        {'name': 'factures', 'description': 'Gestion des factures'},
+        {'name': 'projets', 'description': 'Gestion des projets'},
+        {'name': 'auth', 'description': 'Authentification'},
+    ],
+    'SECURITY': [
+        {
+            'Token': []
+        }
+    ],
+}

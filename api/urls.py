@@ -1,23 +1,33 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework.authtoken.views import obtain_auth_token
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-from api.views import ClientViewSet, FactureViewSet, ProjetViewSet
+from api.views.client_views import ClientViewSet
+from api.views.facture_views import FactureViewSet
+from api.views.projet_views import ProjetViewSet
+from api.views.auth_views import CustomObtainAuthToken, register, user_info, logout
 
-# Configuration du router pour les ViewSets
+app_name = "api"
+
+# Configuration du routeur
 router = DefaultRouter()
-router.register(r'clients', ClientViewSet, basename='client')
-router.register(r'factures', FactureViewSet, basename='facture')
-router.register(r'projets', ProjetViewSet, basename='projet')
+router.register(r'clients', ClientViewSet)
+router.register(r'factures', FactureViewSet)
+router.register(r'projets', ProjetViewSet)
 
 # URLs de l'API
 urlpatterns = [
-    # Endpoints d'authentification
-    path('auth/token/', obtain_auth_token, name='api_token_auth'),
+    # Documentation Swagger/OpenAPI
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('docs/', SpectacularSwaggerView.as_view(url_name='api:schema'), name='swagger-ui'),
+    path('redoc/', SpectacularRedocView.as_view(url_name='api:schema'), name='redoc'),
     
-    # Endpoints des ViewSets
+    # Authentification
+    path('auth/login/', CustomObtainAuthToken.as_view(), name='auth_login'),
+    path('auth/register/', register, name='auth_register'),
+    path('auth/user/', user_info, name='auth_user'),
+    path('auth/logout/', logout, name='auth_logout'),
+    
+    # Endpoints principaux
     path('', include(router.urls)),
-    
-    # Endpoint racine de l'API
-    path('', include('rest_framework.urls')),
 ] 
