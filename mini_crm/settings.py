@@ -196,20 +196,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Configuration Django REST Framework
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
-    'DEFAULT_FILTER_BACKENDS': [
-        'rest_framework.filters.SearchFilter',
-        'rest_framework.filters.OrderingFilter',
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+    "DEFAULT_FILTER_BACKENDS": [
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
     ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # Configuration CORS
@@ -222,28 +222,24 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Configuration drf-spectacular pour la documentation OpenAPI
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Mini-CRM API',
-    'DESCRIPTION': 'API REST pour la gestion de clients, factures et projets',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    'COMPONENT_SPLIT_REQUEST': True,
-    'SCHEMA_PATH_PREFIX': '/api/v1/',
-    'CONTACT': {
-        'name': 'Support API',
-        'email': 'support@minicrm.com',
+    "TITLE": "Mini-CRM API",
+    "DESCRIPTION": "API REST pour la gestion de clients, factures et projets",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_PATH_PREFIX": "/api/v1/",
+    "CONTACT": {
+        "name": "Support API",
+        "email": "support@minicrm.com",
     },
-    'LICENSE': {
-        'name': 'MIT License',
+    "LICENSE": {
+        "name": "MIT License",
     },
-    'TAGS': [
-        {'name': 'clients', 'description': 'Gestion des clients'},
-        {'name': 'factures', 'description': 'Gestion des factures'},
-        {'name': 'projets', 'description': 'Gestion des projets'},
-        {'name': 'auth', 'description': 'Authentification'},
+    "TAGS": [
+        {"name": "clients", "description": "Gestion des clients"},
+        {"name": "factures", "description": "Gestion des factures"},
+        {"name": "projets", "description": "Gestion des projets"},
+        {"name": "auth", "description": "Authentification"},
     ],
-    'SECURITY': [
-        {
-            'Token': []
-        }
-    ],
+    "SECURITY": [{"Token": []}],
 }

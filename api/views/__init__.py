@@ -4,7 +4,7 @@ from .facture_views import FactureViewSet
 from .projet_views import ProjetViewSet
 
 __all__ = [
-    'ClientViewSet',
-    'FactureViewSet', 
-    'ProjetViewSet',
-] 
+    "ClientViewSet",
+    "FactureViewSet",
+    "ProjetViewSet",
+]

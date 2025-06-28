@@ -31,28 +31,25 @@ from .user_serializers import (
 
 __all__ = [
     # Client serializers
-    'ClientSerializer',
-    'ClientDetailSerializer', 
-    'ClientCreateUpdateSerializer',
-    'InteractionSerializer',
-    'InteractionCreateSerializer',
-    'TagSerializer',
-    
+    "ClientSerializer",
+    "ClientDetailSerializer",
+    "ClientCreateUpdateSerializer",
+    "InteractionSerializer",
+    "InteractionCreateSerializer",
+    "TagSerializer",
     # Facture serializers
-    'FactureSerializer',
-    'FactureDetailSerializer',
-    'FactureCreateUpdateSerializer',
-    'FactureStatutUpdateSerializer',
-    
+    "FactureSerializer",
+    "FactureDetailSerializer",
+    "FactureCreateUpdateSerializer",
+    "FactureStatutUpdateSerializer",
     # Projet serializers
-    'ProjetSerializer',
-    'ProjetDetailSerializer',
-    'ProjetCreateUpdateSerializer',
-    'ProjetStatutUpdateSerializer',
-    
+    "ProjetSerializer",
+    "ProjetDetailSerializer",
+    "ProjetCreateUpdateSerializer",
+    "ProjetStatutUpdateSerializer",
     # User serializers
-    'UserSerializer',
-    'UserCreateSerializer',
-    'UserUpdateSerializer',
-    'ChangePasswordSerializer',
-] 
+    "UserSerializer",
+    "UserCreateSerializer",
+    "UserUpdateSerializer",
+    "ChangePasswordSerializer",
+]
