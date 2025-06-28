@@ -21,7 +21,7 @@ class AuthAPITestCase(APITestCase):
 
     def test_obtain_token_valid_credentials(self):
         """Test d'obtention d'un token avec des identifiants valides"""
-        url = reverse("api_token_auth")
+        url = reverse("api:auth_login")
         data = {"username": "testuser", "password": "testpass123"}
 
         response = self.client.post(url, data, format="json")
@@ -35,7 +35,7 @@ class AuthAPITestCase(APITestCase):
 
     def test_obtain_token_invalid_credentials(self):
         """Test d'obtention d'un token avec des identifiants invalides"""
-        url = reverse("api_token_auth")
+        url = reverse("api:auth_login")
         data = {"username": "testuser", "password": "wrongpassword"}
 
         response = self.client.post(url, data, format="json")
@@ -45,7 +45,7 @@ class AuthAPITestCase(APITestCase):
 
     def test_obtain_token_nonexistent_user(self):
         """Test d'obtention d'un token avec un utilisateur inexistant"""
-        url = reverse("api_token_auth")
+        url = reverse("api:auth_login")
         data = {"username": "nonexistent", "password": "testpass123"}
 
         response = self.client.post(url, data, format="json")
@@ -55,7 +55,7 @@ class AuthAPITestCase(APITestCase):
 
     def test_obtain_token_missing_fields(self):
         """Test d'obtention d'un token avec des champs manquants"""
-        url = reverse("api_token_auth")
+        url = reverse("api:auth_login")
 
         # Test sans username
         data = {"password": "testpass123"}
@@ -72,7 +72,7 @@ class AuthAPITestCase(APITestCase):
         # Supprimer le token existant s'il y en a un
         Token.objects.filter(user=self.user).delete()
 
-        url = reverse("api_token_auth")
+        url = reverse("api:auth_login")
         data = {"username": "testuser", "password": "testpass123"}
 
         response = self.client.post(url, data, format="json")
@@ -93,7 +93,7 @@ class AuthAPITestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
 
         # Tester l'accès à un endpoint protégé (clients)
-        url = reverse("client-list")
+        url = reverse("api:client-list")
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -101,7 +101,7 @@ class AuthAPITestCase(APITestCase):
     def test_api_access_without_token(self):
         """Test d'accès à l'API sans token"""
         # Ne pas configurer d'authentification
-        url = reverse("client-list")
+        url = reverse("api:client-list")
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -111,7 +111,7 @@ class AuthAPITestCase(APITestCase):
         # Configurer le client avec un token invalide
         self.client.credentials(HTTP_AUTHORIZATION="Token invalid_token")
 
-        url = reverse("client-list")
+        url = reverse("api:client-list")
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

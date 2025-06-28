@@ -155,7 +155,7 @@ class ProjetViewSet(viewsets.ModelViewSet):
         """Récupérer les projets en cours"""
         projets = Projet.objects.filter(statut="en_cours")
         serializer = self.get_serializer(projets, many=True)
-        return Response(serializer.data)
+        return Response({"projets_en_cours": serializer.data})
 
     @extend_schema(
         summary="Projets terminés",
@@ -167,7 +167,7 @@ class ProjetViewSet(viewsets.ModelViewSet):
         """Récupérer les projets terminés"""
         projets = Projet.objects.filter(statut="termine")
         serializer = self.get_serializer(projets, many=True)
-        return Response(serializer.data)
+        return Response({"projets_termines": serializer.data})
 
     @extend_schema(
         summary="Statistiques des projets",

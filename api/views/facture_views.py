@@ -12,6 +12,7 @@ from drf_spectacular.utils import (
     OpenApiExample,
 )
 import os
+from datetime import datetime
 
 from factures.models import Facture
 from api.serializers import (
@@ -185,7 +186,7 @@ class FactureViewSet(viewsets.ModelViewSet):
         """Récupérer les factures en retard"""
         factures = Facture.objects.filter(statut_paiement="en_retard")
         serializer = self.get_serializer(factures, many=True)
-        return Response(serializer.data)
+        return Response({"factures_en_retard": serializer.data})
 
     @extend_schema(
         summary="Statistiques des factures",
@@ -199,6 +200,7 @@ class FactureViewSet(viewsets.ModelViewSet):
         factures_payees = Facture.objects.filter(statut_paiement="payée").count()
         factures_en_retard = Facture.objects.filter(statut_paiement="en_retard").count()
         factures_envoyees = Facture.objects.filter(statut_paiement="envoyée").count()
+        factures_en_attente = Facture.objects.filter(statut_paiement="envoyée").count()
 
         # Calcul du montant total
         montant_total = sum(f.montant for f in Facture.objects.all())
@@ -212,6 +214,7 @@ class FactureViewSet(viewsets.ModelViewSet):
                 "factures_payees": factures_payees,
                 "factures_en_retard": factures_en_retard,
                 "factures_envoyees": factures_envoyees,
+                "factures_en_attente": factures_en_attente,
                 "montant_total": float(montant_total),
                 "montant_paye": float(montant_paye),
                 "taux_paiement": (
@@ -229,3 +232,27 @@ class FactureViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         """Logique personnalisée lors de la mise à jour"""
         serializer.save()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        instance = serializer.instance
+        output_serializer = FactureDetailSerializer(
+            instance, context=self.get_serializer_context()
+        )
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            output_serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        output_serializer = FactureDetailSerializer(
+            instance, context=self.get_serializer_context()
+        )
+        return Response(output_serializer.data)
