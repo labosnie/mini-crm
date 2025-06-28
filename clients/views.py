@@ -37,10 +37,10 @@ class ClientListViews(LoginRequiredMixin, ListView):
 
         if search_query:
             qs = qs.filter(
-                Q(nom__icontains=q)
-                | Q(email__icontains=q)
-                | Q(prenom__icontains=q)
-                | Q(ville__icontains=q)
+                Q(nom__icontains=search_query)
+                | Q(email__icontains=search_query)
+                | Q(prenom__icontains=search_query)
+                | Q(ville__icontains=search_query)
             )
 
         # Filtrage par statut
