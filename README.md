@@ -145,8 +145,9 @@ Les tâches asynchrones incluent :
 
 Une fois le serveur lancé, accédez à :
 
-- **Interface Swagger** : http://127.0.0.1:8000/api/v1/schema/swagger-ui/
+- **Interface Swagger** : http://127.0.0.1:8000/api/v1/docs/
 - **Documentation OpenAPI** : http://127.0.0.1:8000/api/v1/schema/
+- **Documentation ReDoc** : http://127.0.0.1:8000/api/v1/redoc/
 
 ### Authentification API
 
