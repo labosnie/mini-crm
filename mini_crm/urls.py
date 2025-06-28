@@ -29,4 +29,6 @@ urlpatterns = [
     path("dashboard/", include("mini_crm.dashboard.urls")),
     path("notifications/", include("notifications.urls")),
     path("", include("societe.urls")),
+    # API URLs
+    path("api/v1/", include("api.urls")),
 ]
