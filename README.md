@@ -14,16 +14,16 @@ Un mini CRM développé avec Django pour gérer vos clients, projets et factures
 
 ## 📸 Captures d'écran
 
-![Dashboard](docs/dashboard.png)
+![Dashboard](https://raw.githubusercontent.com/labosnie/mini-crm/main/docs/dashboard.png)
 _Tableau de bord avec KPIs et graphiques en temps réel_
 
-![Gestion clients](docs/clients.png)
+![Gestion clients](https://raw.githubusercontent.com/labosnie/mini-crm/main/docs/clients.png)
 _Interface de gestion des clients avec tags et filtres_
 
-![Factures](docs/factures.png)
+![Factures](https://raw.githubusercontent.com/labosnie/mini-crm/main/docs/factures.png)
 _Gestion des factures avec export PDF/CSV_
 
-![API Documentation](docs/api-docs.png)
+![API Documentation](https://raw.githubusercontent.com/labosnie/mini-crm/main/docs/api-docs.png)
 _Documentation interactive de l'API REST_
 
 ## 🎬 Démonstration
