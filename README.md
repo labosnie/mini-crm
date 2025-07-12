@@ -42,6 +42,12 @@ Un mini CRM développé avec Django pour gérer vos clients, projets et factures
 - [Celery](https://celeryproject.org/) - Tâches asynchrones
 - [ReportLab](https://www.reportlab.com/) - Génération PDF
 
+### Infrastructure
+
+- [Docker](https://www.docker.com/) - Conteneurisation
+- [Docker Compose](https://docs.docker.com/compose/) - Orchestration multi-services
+- [Redis](https://redis.io/) - Cache et broker de messages
+
 ### Frontend
 
 - [Bootstrap 5](https://getbootstrap.com/) - Framework CSS
@@ -56,7 +62,43 @@ Un mini CRM développé avec Django pour gérer vos clients, projets et factures
 
 ## 📦 Installation
 
-### Prérequis
+### Option 1 : Installation avec Docker (Recommandée)
+
+#### Prérequis
+
+- Docker et Docker Compose
+
+#### Démarrage rapide
+
+```bash
+# Cloner le repository
+git clone https://github.com/labosnie/mini-crm.git
+cd mini-crm
+
+# Lancer tous les services
+docker-compose up -d
+
+# Appliquer les migrations
+docker-compose exec web python manage.py migrate
+
+# Créer un superutilisateur
+docker-compose exec web python manage.py createsuperuser
+
+# Accéder à l'application
+# http://localhost:8000
+```
+
+#### Services Docker inclus
+
+- **Web** : Application Django (port 8000)
+- **PostgreSQL** : Base de données (port 5432)
+- **Redis** : Cache et broker Celery (port 6379)
+- **Celery** : Worker pour tâches asynchrones
+- **Celery Beat** : Planificateur de tâches
+
+### Option 2 : Installation locale
+
+#### Prérequis
 
 - Python 3.8+
 - PostgreSQL
@@ -117,6 +159,25 @@ celery -A mini_crm worker -l info
 
 # Terminal 3 : Beat Celery pour les tâches planifiées (optionnel)
 celery -A mini_crm beat -l info
+```
+
+### Commandes Docker utiles
+
+```bash
+# Voir les logs
+docker-compose logs -f web
+
+# Redémarrer un service
+docker-compose restart web
+
+# Arrêter tous les services
+docker-compose down
+
+# Reconstruire l'image
+docker-compose build
+
+# Accéder au shell du conteneur
+docker-compose exec web bash
 ```
 
 ## 🔧 Configuration
