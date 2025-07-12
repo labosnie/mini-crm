@@ -50,13 +50,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",
+    # "django.contrib.sites",  # Temporairement désactivé pour la démo
     "django_crontab",
     "notifications.apps.NotificationsConfig",
     # Applications tierces
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
+    # "allauth",  # Temporairement désactivé pour la démo
+    # "allauth.account",  # Temporairement désactivé pour la démo
+    # "allauth.socialaccount",  # Temporairement désactivé pour la démo
     "crispy_forms",
     "crispy_bootstrap5",
     "rest_framework",
@@ -81,7 +81,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
+    # "allauth.account.middleware.AccountMiddleware",  # Temporairement désactivé pour la démo
 ]
 
 ROOT_URLCONF = "mini_crm.urls"
@@ -164,10 +164,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    # "allauth.account.auth_backends.AuthenticationBackend",  # Temporairement désactivé pour la démo
 ]
 
-SITE_ID = 1
+# SITE_ID = 1  # Temporairement désactivé pour la démo
 
 # Configuration de l'authentification
 LOGIN_REDIRECT_URL = "/"
