@@ -114,7 +114,8 @@ DATABASES = {
     }
 }
 
-if os.environ.get("DATABASE_URL"):
+# Utiliser PostgreSQL en production, SQLite en développement
+if os.environ.get("DATABASE_URL") and not DEBUG:
     DATABASES["default"] = dj_database_url.parse(os.environ.get("DATABASE_URL"))
 
 
@@ -227,9 +228,23 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://mini-crm-lezi.onrender.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Configuration CSRF pour la production
+CSRF_TRUSTED_ORIGINS = [
+    "https://mini-crm-lezi.onrender.com",
+    "https://*.onrender.com",
+]
+
+# Configuration de sécurité pour la production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # Configuration drf-spectacular pour la documentation OpenAPI
 SPECTACULAR_SETTINGS = {

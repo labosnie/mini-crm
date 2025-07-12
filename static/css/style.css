@@ -33,3 +33,53 @@
   padding: 0.25em 0.5em;
   font-size: 0.75em;
 }
+
+/* Styles pour les formulaires d'authentification */
+.form-control {
+  border-radius: 0.375rem;
+  border: 1px solid #ced4da;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Style pour les champs de formulaire Django */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  outline: none;
+}
+
+/* Style pour la page de connexion */
+.login-card {
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 2rem;
+}
+
+.login-card .card-header {
+  border-bottom: none;
+  padding: 1.5rem 1rem;
+}
+
+.login-card .card-body {
+  padding: 2rem;
+}
