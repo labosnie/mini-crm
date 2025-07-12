@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 if os.environ.get("ALLOWED_HOSTS"):
     ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 else:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com", "mini-crm-lezi.onrender.com"]
 
 
 # Application definition
