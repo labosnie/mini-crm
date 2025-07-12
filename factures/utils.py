@@ -127,13 +127,15 @@ def generate_facture_pdf(facture):
         )
     # Si tu n'as pas de lignes, ajoute une ligne factice :
     if len(data) == 1:
+        TAUX_TVA = 0.20  # 20%
+        montant_ht = float(facture.montant) / (1 + TAUX_TVA)
         data.append(
             [
                 "Projet : " + facture.projet.titre,
                 "1",
                 "",
-                f"{facture.montant:.2f} €",
-                f"{facture.montant:.2f} €",
+                f"{montant_ht:.2f} €",
+                f"{montant_ht:.2f} €",
                 "20 %",
             ]
         )

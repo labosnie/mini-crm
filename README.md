@@ -5,6 +5,32 @@
 
 Un mini CRM développé avec Django pour gérer vos clients, projets et factures avec une API REST complète et une documentation interactive.
 
+## 🎯 Démo en ligne
+
+**[🚀 Voir la démo live](https://mini-crm-demo.onrender.com)**
+
+- **Compte démo** : `demo@example.com` / `demo123`
+- **Accès API** : `/api/v1/docs/`
+
+## 📸 Captures d'écran
+
+![Dashboard](docs/dashboard.png)
+_Tableau de bord avec KPIs et graphiques en temps réel_
+
+![Gestion clients](docs/clients.png)
+_Interface de gestion des clients avec tags et filtres_
+
+![Factures](docs/factures.png)
+_Gestion des factures avec export PDF/CSV_
+
+![API Documentation](docs/api-docs.png)
+_Documentation interactive de l'API REST_
+
+## 🎬 Démonstration
+
+![Demo GIF](docs/demo.gif)
+_Navigation rapide et création de facture en 15 secondes_
+
 ## 🚀 Fonctionnalités
 
 ### Interface Web
