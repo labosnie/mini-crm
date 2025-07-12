@@ -70,15 +70,16 @@
                 class="nav-link position-relative"
                 href="{% url 'notifications:liste' %}"
               >
-                Notifications {% with unread_count=request.user.notification_set.filter.count %}  
+              Notifications
+              {% with unread_count=user.notification_set.count %}
                 {% if unread_count > 0 %}
-                <span
-                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                >
-                  {{ unread_count }}
-                </span>
-                {% endif %} 
-                {% endwith %}
+                  <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  >
+                    {{ unread_count }}
+                  </span>
+                {% endif %}
+              {% endwith %}
               </a>
             </li>
             <li class="nav-item">
@@ -89,12 +90,12 @@
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'account_email' %}">
+              <a class="nav-link" href="#" disabled>
                 <i class="fas fa-user-cog"></i> Mon compte
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'account_logout' %}">
+              <a class="nav-link" href="{% url 'logout' %}">
                 <i class="fas fa-sign-out-alt"></i> Déconnexion
               </a>
             </li>
@@ -102,7 +103,7 @@
           {% else %}
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'account_login' %}">
+              <a class="nav-link" href="{% url 'login' %}">
                 <i class="fas fa-sign-in-alt"></i> Connexion
               </a>
             </li>

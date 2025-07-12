@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block content %}
+<div class="container" style="max-width: 400px; margin-top: 60px">
+  <h2>Connexion</h2>
+  {% if form.errors %}
+  <div class="alert alert-danger">
+    Identifiants invalides. Veuillez réessayer.
+  </div>
+  {% endif %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="mb-3">
+      {{ form.username.label_tag }}<br />
+      {{ form.username }}
+    </div>
+    <div class="mb-3">
+      {{ form.password.label_tag }}<br />
+      {{ form.password }}
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+  </form>
+</div>
+{% endblock %}
