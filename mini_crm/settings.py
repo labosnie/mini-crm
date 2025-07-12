@@ -159,7 +159,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    # "allauth.account.auth_backends.AuthenticationBackend",  # Temporairement désactivé pour la démo
 ]
 
 SITE_ID = 1
@@ -167,7 +167,7 @@ SITE_ID = 1
 # Configuration de l'authentification
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "none"  # Temporairement désactivé pour la démo
 
 # Configuration de crispy-forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

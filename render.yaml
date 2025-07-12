@@ -13,7 +13,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: mini-crm-demo.onrender.com
+        value: mini-crm-lezi.onrender.com
       - key: DATABASE_URL
         fromDatabase:
           name: mini-crm-db
@@ -23,15 +23,17 @@ services:
           type: redis
           name: mini-crm-redis
           property: connectionString
+    dependsOn:
+      - name: mini-crm-db
+      - name: mini-crm-redis
+
+  - type: redis
+    name: mini-crm-redis
+    plan: free
+    ipAllowList: []
 
 databases:
   - name: mini-crm-db
     plan: free
     databaseName: mini_crm
     user: mini_crm_user
-
-services:
-  - type: redis
-    name: mini-crm-redis
-    plan: free
-    ipAllowList: [] 
