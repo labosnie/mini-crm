@@ -72,14 +72,15 @@ class FactureCreateUpdateSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """Validation personnalisée"""
-        # Vérifier que le projet appartient au client
-        if data["projet"].client != data["client"]:
-            raise serializers.ValidationError(
-                "Le projet doit appartenir au client sélectionné."
-            )
+        # Vérifier que le projet appartient au client (seulement si les deux sont présents)
+        if "projet" in data and "client" in data:
+            if data["projet"].client != data["client"]:
+                raise serializers.ValidationError(
+                    "Le projet doit appartenir au client sélectionné."
+                )
 
-        # Vérifier que le montant est positif
-        if data["montant"] <= 0:
+        # Vérifier que le montant est positif (seulement s'il est présent)
+        if "montant" in data and data["montant"] <= 0:
             raise serializers.ValidationError("Le montant doit être supérieur à zéro.")
 
         return data

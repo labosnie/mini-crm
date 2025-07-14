@@ -22,15 +22,10 @@ class ClientAPITestCase(APITestCase):
         # Créer un token pour l'utilisateur
         self.token = Token.objects.create(user=self.user)
 
-        # Configurer le client API avec authentification
-        self.client = APIClient()
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-
-        # Créer des clients de test
-        self.client1 = Client.objects.create(
-            nom="Client Test 1",
-            prenom="Prénom",
-            email="client1@test.com",
+        # Créer un client de test
+        self.client_obj = Client.objects.create(
+            nom="Client Test",
+            email="client@test.com",
             telephone="0123456789",
             adresse="123 Rue Test",
             code_postal="75001",
@@ -38,67 +33,50 @@ class ClientAPITestCase(APITestCase):
             statut="actif",
         )
 
-        self.client2 = Client.objects.create(
-            nom="Client Test 2",
-            prenom="Prénom",
-            email="client2@test.com",
-            telephone="0987654321",
-            adresse="456 Rue Test",
-            code_postal="75002",
-            ville="Paris",
-            statut="inactif",
-        )
-
-        # Créer un projet de test
-        self.projet = Projet.objects.create(
-            titre="Projet Test",
-            description="Description du projet test",
-            client=self.client1,
-            date_debut=datetime.now().date(),
-            statut="en_cours",
-        )
+        # Configurer le client API avec authentification
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
 
     def test_list_clients_authenticated(self):
         """Test de récupération de la liste des clients avec authentification"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-list")
+        url = "/api/v1/clients/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
+        self.assertIn("count", response.data)
 
     def test_list_clients_unauthenticated(self):
         """Test de récupération de la liste des clients sans authentification"""
-        url = reverse("api:client-list")
+        self.client.credentials()  # Supprimer l'authentification
+        url = "/api/v1/clients/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_client(self):
         """Test de création d'un nouveau client"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-list")
+        url = "/api/v1/clients/"
         data = {
             "nom": "Nouveau Client",
             "email": "nouveau@test.com",
-            "telephone": "0123456789",
-            "adresse": "123 Rue Test",
-            "code_postal": "75001",
+            "telephone": "0987654321",
+            "adresse": "456 Rue Nouvelle",
+            "code_postal": "75002",
             "ville": "Paris",
             "statut": "actif",
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["nom"], "Nouveau Client")
+        self.assertEqual(Client.objects.count(), 2)
 
     def test_create_client_invalid_email(self):
         """Test de création d'un client avec un email déjà existant"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-list")
+        url = "/api/v1/clients/"
         data = {
-            "nom": "Client Dupliqué",
-            "email": self.client1.email,  # Email déjà existant
-            "telephone": "0123456789",
-            "adresse": "123 Rue Test",
-            "code_postal": "75001",
+            "nom": "Client Duplicate",
+            "email": "client@test.com",  # Email déjà existant
+            "telephone": "1111111111",
+            "adresse": "789 Rue Duplicate",
+            "code_postal": "75003",
             "ville": "Paris",
             "statut": "actif",
         }
@@ -107,65 +85,71 @@ class ClientAPITestCase(APITestCase):
 
     def test_retrieve_client(self):
         """Test de récupération d'un client spécifique"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-detail", args=[self.client1.id])
+        url = f"/api/v1/clients/{self.client_obj.id}/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["nom"], self.client1.nom)
+        self.assertEqual(response.data["nom"], "Client Test")
 
     def test_update_client(self):
         """Test de mise à jour d'un client"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-detail", args=[self.client1.id])
-        data = {"telephone": "0987654321"}
+        url = f"/api/v1/clients/{self.client_obj.id}/"
+        data = {"telephone": "9999999999"}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["telephone"], "0987654321")
+        self.assertEqual(response.data["telephone"], "9999999999")
 
     def test_delete_client(self):
         """Test de suppression d'un client"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-detail", args=[self.client1.id])
+        url = f"/api/v1/clients/{self.client_obj.id}/"
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Client.objects.count(), 0)
 
     def test_search_clients(self):
         """Test de recherche de clients"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-list")
-        response = self.client.get(url, {"search": "Test"})
+        url = "/api/v1/clients/?search=Test"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreater(len(response.data["results"]), 0)
 
     def test_filter_clients_by_statut(self):
         """Test de filtrage des clients par statut"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-list")
-        response = self.client.get(url, {"statut": "actif"})
+        url = "/api/v1/clients/?statut=actif"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for client in response.data["results"]:
+            self.assertEqual(client["statut"], "actif")
 
     def test_client_stats(self):
         """Test de l'endpoint des statistiques des clients"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-list")
-        response = self.client.get(url, {"stats": "true"})
+        url = "/api/v1/clients/stats/"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("total_clients", response.data)
+        self.assertIn("clients_actifs", response.data)
 
     def test_add_interaction_to_client(self):
         """Test d'ajout d'une interaction à un client"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-list")
+        url = f"/api/v1/clients/{self.client_obj.id}/add_interaction/"
         data = {
-            "client": self.client1.id,
-            "type_interaction": "appel",
+            "type": "appel",
             "description": "Appel de suivi",
-            "date_interaction": "2024-01-15",
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Interaction.objects.count(), 1)
 
     def test_get_client_interactions(self):
         """Test de récupération des interactions d'un client"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:client-list")
-        response = self.client.get(url, {"interactions": "true"})
+        # Créer une interaction d'abord
+        Interaction.objects.create(
+            client=self.client_obj,
+            type="appel",
+            description="Test interaction",
+            utilisateur=self.user,
+        )
+
+        url = f"/api/v1/clients/{self.client_obj.id}/interactions/"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)

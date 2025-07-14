@@ -4,12 +4,10 @@ from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.urls import reverse
-from decimal import Decimal
-from datetime import datetime, timedelta
-
 from clients.models import Client
 from projets.models import Projet
 from factures.models import Facture
+from datetime import datetime, timedelta
 
 
 class ProjetAPITestCase(APITestCase):
@@ -25,14 +23,9 @@ class ProjetAPITestCase(APITestCase):
         # Créer un token pour l'utilisateur
         self.token = Token.objects.create(user=self.user)
 
-        # Configurer le client API avec authentification
-        self.client = APIClient()
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-
         # Créer un client de test
-        self.client1 = Client.objects.create(
+        self.client_obj = Client.objects.create(
             nom="Client Test",
-            prenom="Prénom",
             email="client@test.com",
             telephone="0123456789",
             adresse="123 Rue Test",
@@ -41,88 +34,70 @@ class ProjetAPITestCase(APITestCase):
             statut="actif",
         )
 
-        # Créer des projets de test
-        self.projet1 = Projet.objects.create(
-            titre="Projet Test 1",
-            description="Description du projet test 1",
-            client=self.client1,
+        # Créer un projet de test
+        self.projet = Projet.objects.create(
+            titre="Projet Test",
+            description="Description du projet test",
+            client=self.client_obj,
             date_debut=datetime.now().date(),
-            date_fin=datetime.now().date() + timedelta(days=30),
-            statut="en_cours",
+            date_fin=(datetime.now() + timedelta(days=30)).date(),
             montant=5000.00,
+            statut="en_cours",
         )
 
-        self.projet2 = Projet.objects.create(
-            titre="Projet Test 2",
-            description="Description du projet test 2",
-            client=self.client1,
-            date_debut=datetime.now().date() - timedelta(days=60),
-            date_fin=datetime.now().date() - timedelta(days=30),
-            statut="termine",
-            montant=3000.00,
-        )
-
-        # Créer des factures de test
-        self.facture1 = Facture.objects.create(
-            numero="FACT-001",
-            client=self.client1,
-            projet=self.projet1,
-            montant=2000.00,
+        # Créer une facture de test pour le projet
+        self.facture = Facture.objects.create(
+            client=self.client_obj,
+            projet=self.projet,
+            montant=2500.00,
             date_emission=datetime.now().date(),
+            date_echeance=(datetime.now() + timedelta(days=30)).date(),
             statut_paiement="envoyée",
         )
 
-        self.facture2 = Facture.objects.create(
-            numero="FACT-002",
-            client=self.client1,
-            projet=self.projet1,
-            montant=3000.00,
-            date_emission=datetime.now().date(),
-            statut_paiement="payée",
-        )
+        # Configurer le client API avec authentification
+        self.client = APIClient()
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
 
     def test_list_projets_authenticated(self):
         """Test de récupération de la liste des projets avec authentification"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-list")
+        url = "/api/v1/projets/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
+        self.assertIn("count", response.data)
 
     def test_list_projets_unauthenticated(self):
         """Test de récupération de la liste des projets sans authentification"""
-        url = reverse("api:projet-list")
+        self.client.credentials()  # Supprimer l'authentification
+        url = "/api/v1/projets/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_projet(self):
         """Test de création d'un nouveau projet"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-list")
+        url = "/api/v1/projets/"
         data = {
             "titre": "Nouveau Projet",
             "description": "Description du nouveau projet",
-            "client": self.client1.id,
-            "date_debut": "2024-01-15",
-            "date_fin": "2024-06-15",
-            "montant": 5000.00,
+            "client": self.client_obj.id,
+            "date_debut": datetime.now().strftime("%Y-%m-%d"),
+            "date_fin": (datetime.now() + timedelta(days=60)).strftime("%Y-%m-%d"),
+            "montant": 8000.00,
             "statut": "en_cours",
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["titre"], "Nouveau Projet")
+        self.assertEqual(Projet.objects.count(), 2)
 
     def test_create_projet_invalid_data(self):
         """Test de création d'un projet avec des données invalides"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-list")
+        url = "/api/v1/projets/"
         data = {
             "titre": "",  # Titre vide invalide
             "description": "Description du projet",
-            "client": self.client1.id,
-            "date_debut": "2024-01-15",
-            "date_fin": "2024-06-15",
-            "montant": 5000.00,
+            "client": self.client_obj.id,
+            "date_debut": datetime.now().strftime("%Y-%m-%d"),
             "statut": "en_cours",
         }
         response = self.client.post(url, data, format="json")
@@ -130,46 +105,44 @@ class ProjetAPITestCase(APITestCase):
 
     def test_retrieve_projet(self):
         """Test de récupération d'un projet spécifique"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-detail", args=[self.projet1.id])
+        url = f"/api/v1/projets/{self.projet.id}/"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["titre"], self.projet1.titre)
+        self.assertEqual(response.data["titre"], "Projet Test")
 
     def test_update_projet(self):
         """Test de mise à jour d'un projet"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-detail", args=[self.projet1.id])
-        data = {"titre": "Projet Modifié"}
+        url = f"/api/v1/projets/{self.projet.id}/"
+        data = {"montant": 6000.00}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["titre"], "Projet Modifié")
+        self.assertEqual(response.data["montant"], "6000.00")
 
     def test_delete_projet(self):
         """Test de suppression d'un projet"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-detail", args=[self.projet1.id])
+        url = f"/api/v1/projets/{self.projet.id}/"
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Projet.objects.count(), 0)
 
     def test_search_projets(self):
         """Test de recherche de projets"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-list")
-        response = self.client.get(url, {"search": "Test"})
+        url = "/api/v1/projets/?search=Test"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreater(len(response.data["results"]), 0)
 
     def test_filter_projets_by_statut(self):
         """Test de filtrage des projets par statut"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-list")
-        response = self.client.get(url, {"statut": "en_cours"})
+        url = "/api/v1/projets/?statut=en_cours"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for projet in response.data["results"]:
+            self.assertEqual(projet["statut"], "en_cours")
 
     def test_update_projet_statut(self):
         """Test de mise à jour du statut d'un projet"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-detail", args=[self.projet1.id])
+        url = f"/api/v1/projets/{self.projet.id}/update_statut/"
         data = {"statut": "termine"}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -177,28 +150,29 @@ class ProjetAPITestCase(APITestCase):
 
     def test_projets_en_cours(self):
         """Test de récupération des projets en cours"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-list")
-        response = self.client.get(url, {"en_cours": "true"})
+        url = "/api/v1/projets/en_cours/"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("projets_en_cours", response.data)  # pour en_cours
 
     def test_projets_termines(self):
         """Test de récupération des projets terminés"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-list")
-        response = self.client.get(url, {"termines": "true"})
+        url = "/api/v1/projets/termines/"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("projets_termines", response.data)  # pour termines
 
     def test_projet_factures(self):
         """Test de récupération des factures d'un projet"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-detail", args=[self.projet1.id])
-        response = self.client.get(url, {"factures": "true"})
+        url = f"/api/v1/projets/{self.projet.id}/factures/"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
 
     def test_projet_stats(self):
         """Test de l'endpoint des statistiques des projets"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token.key}")
-        url = reverse("api:projet-list")
-        response = self.client.get(url, {"stats": "true"})
+        url = "/api/v1/projets/stats/"
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("total_projets", response.data)
+        self.assertIn("montant_total", response.data)
