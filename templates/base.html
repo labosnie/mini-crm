@@ -70,16 +70,23 @@
                 class="nav-link position-relative"
                 href="{% url 'notifications:liste' %}"
               >
-              Notifications
-              {% with unread_count=user.notification_set.count %}
-                {% if unread_count > 0 %}
-                  <span
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                  >
-                    {{ unread_count }}
-                  </span>
-                {% endif %}
-              {% endwith %}
+              <li class="nav-item">
+                <a
+                  class="nav-link position-relative"
+                  href="{% url 'notifications:liste' %}"
+                >
+                  Notifications
+                  {% with unread_count=user.notification_set.count %}
+                    {% if unread_count > 0 %}
+                      <span
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      >
+                        {{ unread_count }}
+                      </span>
+                    {% endif %}
+                  {% endwith %}
+                </a>
+              </li>
               </a>
             </li>
             <li class="nav-item">
@@ -95,7 +102,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">
+              <a class="nav-link" href="{% url 'account_logout' %}">
                 <i class="fas fa-sign-out-alt"></i> Déconnexion
               </a>
             </li>

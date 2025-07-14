@@ -94,7 +94,9 @@ def test_clients(token):
                 client_id = location.split("/")[-2]  # /api/v1/clients/12/ -> 12
             else:
                 # Fallback : chercher le client par email
-                search_response = requests.get(f"{BASE_URL}/clients/?email={client_data['email']}", headers=headers)
+                search_response = requests.get(
+                    f"{BASE_URL}/clients/?email={client_data['email']}", headers=headers
+                )
                 if search_response.status_code == 200:
                     results = search_response.json().get("results", [])
                     if results:
@@ -144,7 +146,10 @@ def test_projets(token, client_id):
         projet_id = projet_data.get("id")
         if not projet_id:
             # Fallback : chercher le projet par titre et client
-            search_response = requests.get(f"{BASE_URL}/projets/?client={client_id}&titre={projet_data['titre']}", headers=headers)
+            search_response = requests.get(
+                f"{BASE_URL}/projets/?client={client_id}&titre={projet_data['titre']}",
+                headers=headers,
+            )
             if search_response.status_code == 200:
                 results = search_response.json().get("results", [])
                 if results:
@@ -277,11 +282,13 @@ def token():
     assert t is not None, "Échec de l'authentification, impossible d'obtenir un token."
     return t
 
+
 @pytest.fixture(scope="session")
 def client_id(token):
     cid = test_clients(token)
     assert cid is not None, "Impossible de créer un client pour les tests."
     return cid
+
 
 @pytest.fixture(scope="session")
 def projet_id(token, client_id):
@@ -289,19 +296,21 @@ def projet_id(token, client_id):
     assert pid is not None, "Impossible de créer un projet pour les tests."
     return pid
 
+
 # Adapter les tests pour utiliser les fixtures pytest
+
 
 def test_clients_api(token):
     test_clients(token)
 
+
 def test_projets_api(token, client_id):
     test_projets(token, client_id)
+
 
 def test_factures_api(token, client_id, projet_id):
     test_factures(token, client_id, projet_id)
 
+
 def test_filtres_et_recherche_api(token):
     test_filtres_et_recherche(token)
-
-
-
