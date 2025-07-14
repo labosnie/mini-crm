@@ -59,7 +59,7 @@ class FactureAPITestCase(APITestCase):
 
     def test_list_factures_authenticated(self):
         """Test de récupération de la liste des factures avec authentification"""
-        url = "/api/v1/factures/"
+        url = "/api/v1/factures"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -68,13 +68,13 @@ class FactureAPITestCase(APITestCase):
     def test_list_factures_unauthenticated(self):
         """Test de récupération de la liste des factures sans authentification"""
         self.client.credentials()  # Supprimer l'authentification
-        url = "/api/v1/factures/"
+        url = "/api/v1/factures"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_facture(self):
         """Test de création d'une nouvelle facture"""
-        url = "/api/v1/factures/"
+        url = "/api/v1/factures"
         data = {
             "client": self.client_obj.id,
             "projet": self.projet.id,
@@ -89,7 +89,7 @@ class FactureAPITestCase(APITestCase):
 
     def test_create_facture_invalid_data(self):
         """Test de création d'une facture avec des données invalides"""
-        url = "/api/v1/factures/"
+        url = "/api/v1/factures"
         data = {
             "client": self.client_obj.id,
             "projet": self.projet.id,
@@ -102,14 +102,14 @@ class FactureAPITestCase(APITestCase):
 
     def test_retrieve_facture(self):
         """Test de récupération d'une facture spécifique"""
-        url = f"/api/v1/factures/{self.facture.id}/"
+        url = f"/api/v1/factures/{self.facture.id}"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["montant"], "1000.00")
 
     def test_update_facture(self):
         """Test de mise à jour d'une facture"""
-        url = f"/api/v1/factures/{self.facture.id}/"
+        url = f"/api/v1/factures/{self.facture.id}"
         data = {"montant": 1500.00}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -117,21 +117,21 @@ class FactureAPITestCase(APITestCase):
 
     def test_delete_facture(self):
         """Test de suppression d'une facture"""
-        url = f"/api/v1/factures/{self.facture.id}/"
+        url = f"/api/v1/factures/{self.facture.id}"
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Facture.objects.count(), 0)
 
     def test_search_factures(self):
         """Test de recherche de factures"""
-        url = "/api/v1/factures/?search=Test"
+        url = "/api/v1/factures?search=Test"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreater(len(response.data["results"]), 0)
 
     def test_filter_factures_by_statut(self):
         """Test de filtrage des factures par statut"""
-        url = "/api/v1/factures/?statut_paiement=envoyée"
+        url = "/api/v1/factures?statut_paiement=envoyée"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         for facture in response.data["results"]:
@@ -139,14 +139,14 @@ class FactureAPITestCase(APITestCase):
 
     def test_factures_en_retard(self):
         """Test de récupération des factures en retard"""
-        url = "/api/v1/factures/en_retard/"
+        url = "/api/v1/factures/en_retard"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("factures_en_retard", response.data)
 
     def test_update_facture_statut(self):
         """Test de mise à jour du statut d'une facture"""
-        url = f"/api/v1/factures/{self.facture.id}/update_statut/"
+        url = f"/api/v1/factures/{self.facture.id}/update_statut"
         data = {"statut_paiement": "payée"}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -154,7 +154,7 @@ class FactureAPITestCase(APITestCase):
 
     def test_facture_stats(self):
         """Test de l'endpoint des statistiques des factures"""
-        url = "/api/v1/factures/stats/"
+        url = "/api/v1/factures/stats"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("total_factures", response.data)
@@ -162,7 +162,7 @@ class FactureAPITestCase(APITestCase):
 
     def test_facture_pdf_endpoint(self):
         """Test de l'endpoint de génération PDF (test de structure)"""
-        url = f"/api/v1/factures/{self.facture.id}/pdf/"
+        url = f"/api/v1/factures/{self.facture.id}/pdf"
         response = self.client.get(url)
         # Le endpoint peut retourner 200 (PDF généré) ou 404 (pas de template)
         self.assertIn(

@@ -14,7 +14,7 @@ from api.views.auth_views import CustomObtainAuthToken, register, user_info, log
 app_name = "api"
 
 # Configuration du routeur
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=False)
 router.register(r"clients", ClientViewSet)
 router.register(r"factures", FactureViewSet)
 router.register(r"projets", ProjetViewSet)
@@ -30,10 +30,10 @@ urlpatterns = [
     ),
     path("redoc/", SpectacularRedocView.as_view(url_name="api:schema"), name="redoc"),
     # Authentification
-    path("auth/login/", CustomObtainAuthToken.as_view(), name="auth_login"),
-    path("auth/register/", register, name="auth_register"),
-    path("auth/user/", user_info, name="auth_user"),
-    path("auth/logout/", logout, name="auth_logout"),
+    path("auth/login", CustomObtainAuthToken.as_view(), name="auth_login"),
+    path("auth/register", register, name="auth_register"),
+    path("auth/user", user_info, name="auth_user"),
+    path("auth/logout", logout, name="auth_logout"),
     # Endpoints principaux
     path("", include(router.urls)),
 ]

@@ -39,7 +39,7 @@ class ClientAPITestCase(APITestCase):
 
     def test_list_clients_authenticated(self):
         """Test de récupération de la liste des clients avec authentification"""
-        url = "/api/v1/clients/"
+        url = "/api/v1/clients"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -48,13 +48,13 @@ class ClientAPITestCase(APITestCase):
     def test_list_clients_unauthenticated(self):
         """Test de récupération de la liste des clients sans authentification"""
         self.client.credentials()  # Supprimer l'authentification
-        url = "/api/v1/clients/"
+        url = "/api/v1/clients"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_client(self):
         """Test de création d'un nouveau client"""
-        url = "/api/v1/clients/"
+        url = "/api/v1/clients"
         data = {
             "nom": "Nouveau Client",
             "email": "nouveau@test.com",
@@ -70,7 +70,7 @@ class ClientAPITestCase(APITestCase):
 
     def test_create_client_invalid_email(self):
         """Test de création d'un client avec un email déjà existant"""
-        url = "/api/v1/clients/"
+        url = "/api/v1/clients"
         data = {
             "nom": "Client Duplicate",
             "email": "client@test.com",  # Email déjà existant
@@ -85,14 +85,14 @@ class ClientAPITestCase(APITestCase):
 
     def test_retrieve_client(self):
         """Test de récupération d'un client spécifique"""
-        url = f"/api/v1/clients/{self.client_obj.id}/"
+        url = f"/api/v1/clients/{self.client_obj.id}"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["nom"], "Client Test")
 
     def test_update_client(self):
         """Test de mise à jour d'un client"""
-        url = f"/api/v1/clients/{self.client_obj.id}/"
+        url = f"/api/v1/clients/{self.client_obj.id}"
         data = {"telephone": "9999999999"}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -100,21 +100,21 @@ class ClientAPITestCase(APITestCase):
 
     def test_delete_client(self):
         """Test de suppression d'un client"""
-        url = f"/api/v1/clients/{self.client_obj.id}/"
+        url = f"/api/v1/clients/{self.client_obj.id}"
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Client.objects.count(), 0)
 
     def test_search_clients(self):
         """Test de recherche de clients"""
-        url = "/api/v1/clients/?search=Test"
+        url = "/api/v1/clients?search=Test"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreater(len(response.data["results"]), 0)
 
     def test_filter_clients_by_statut(self):
         """Test de filtrage des clients par statut"""
-        url = "/api/v1/clients/?statut=actif"
+        url = "/api/v1/clients?statut=actif"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         for client in response.data["results"]:
@@ -122,7 +122,7 @@ class ClientAPITestCase(APITestCase):
 
     def test_client_stats(self):
         """Test de l'endpoint des statistiques des clients"""
-        url = "/api/v1/clients/stats/"
+        url = "/api/v1/clients/stats"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("total_clients", response.data)
@@ -130,7 +130,7 @@ class ClientAPITestCase(APITestCase):
 
     def test_add_interaction_to_client(self):
         """Test d'ajout d'une interaction à un client"""
-        url = f"/api/v1/clients/{self.client_obj.id}/add_interaction/"
+        url = f"/api/v1/clients/{self.client_obj.id}/add_interaction"
         data = {
             "type": "appel",
             "description": "Appel de suivi",
@@ -149,7 +149,7 @@ class ClientAPITestCase(APITestCase):
             utilisateur=self.user,
         )
 
-        url = f"/api/v1/clients/{self.client_obj.id}/interactions/"
+        url = f"/api/v1/clients/{self.client_obj.id}/interactions"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)

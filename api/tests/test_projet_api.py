@@ -61,7 +61,7 @@ class ProjetAPITestCase(APITestCase):
 
     def test_list_projets_authenticated(self):
         """Test de récupération de la liste des projets avec authentification"""
-        url = "/api/v1/projets/"
+        url = "/api/v1/projets"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("results", response.data)
@@ -70,13 +70,13 @@ class ProjetAPITestCase(APITestCase):
     def test_list_projets_unauthenticated(self):
         """Test de récupération de la liste des projets sans authentification"""
         self.client.credentials()  # Supprimer l'authentification
-        url = "/api/v1/projets/"
+        url = "/api/v1/projets"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_projet(self):
         """Test de création d'un nouveau projet"""
-        url = "/api/v1/projets/"
+        url = "/api/v1/projets"
         data = {
             "titre": "Nouveau Projet",
             "description": "Description du nouveau projet",
@@ -92,7 +92,7 @@ class ProjetAPITestCase(APITestCase):
 
     def test_create_projet_invalid_data(self):
         """Test de création d'un projet avec des données invalides"""
-        url = "/api/v1/projets/"
+        url = "/api/v1/projets"
         data = {
             "titre": "",  # Titre vide invalide
             "description": "Description du projet",
@@ -105,14 +105,14 @@ class ProjetAPITestCase(APITestCase):
 
     def test_retrieve_projet(self):
         """Test de récupération d'un projet spécifique"""
-        url = f"/api/v1/projets/{self.projet.id}/"
+        url = f"/api/v1/projets/{self.projet.id}"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["titre"], "Projet Test")
 
     def test_update_projet(self):
         """Test de mise à jour d'un projet"""
-        url = f"/api/v1/projets/{self.projet.id}/"
+        url = f"/api/v1/projets/{self.projet.id}"
         data = {"montant": 6000.00}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -120,21 +120,21 @@ class ProjetAPITestCase(APITestCase):
 
     def test_delete_projet(self):
         """Test de suppression d'un projet"""
-        url = f"/api/v1/projets/{self.projet.id}/"
+        url = f"/api/v1/projets/{self.projet.id}"
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Projet.objects.count(), 0)
 
     def test_search_projets(self):
         """Test de recherche de projets"""
-        url = "/api/v1/projets/?search=Test"
+        url = "/api/v1/projets?search=Test"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreater(len(response.data["results"]), 0)
 
     def test_filter_projets_by_statut(self):
         """Test de filtrage des projets par statut"""
-        url = "/api/v1/projets/?statut=en_cours"
+        url = "/api/v1/projets?statut=en_cours"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         for projet in response.data["results"]:
@@ -142,7 +142,7 @@ class ProjetAPITestCase(APITestCase):
 
     def test_update_projet_statut(self):
         """Test de mise à jour du statut d'un projet"""
-        url = f"/api/v1/projets/{self.projet.id}/update_statut/"
+        url = f"/api/v1/projets/{self.projet.id}/update_statut"
         data = {"statut": "termine"}
         response = self.client.patch(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -150,28 +150,28 @@ class ProjetAPITestCase(APITestCase):
 
     def test_projets_en_cours(self):
         """Test de récupération des projets en cours"""
-        url = "/api/v1/projets/en_cours/"
+        url = "/api/v1/projets/en_cours"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("projets_en_cours", response.data)  # pour en_cours
 
     def test_projets_termines(self):
         """Test de récupération des projets terminés"""
-        url = "/api/v1/projets/termines/"
+        url = "/api/v1/projets/termines"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("projets_termines", response.data)  # pour termines
 
     def test_projet_factures(self):
         """Test de récupération des factures d'un projet"""
-        url = f"/api/v1/projets/{self.projet.id}/factures/"
+        url = f"/api/v1/projets/{self.projet.id}/factures"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
 
     def test_projet_stats(self):
         """Test de l'endpoint des statistiques des projets"""
-        url = "/api/v1/projets/stats/"
+        url = "/api/v1/projets/stats"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("total_projets", response.data)
