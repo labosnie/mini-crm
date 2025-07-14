@@ -48,4 +48,7 @@ USER django
 EXPOSE 8000
 
 # Commande par défaut
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"] 
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Créer le répertoire de logs avec les bonnes permissions
+RUN mkdir -p /app/logs && chown -R django:django /app/logs 
