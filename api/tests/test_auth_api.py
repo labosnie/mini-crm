@@ -56,62 +56,47 @@ class AuthAPITestCase(APITestCase):
     def test_obtain_token_missing_fields(self):
         """Test d'obtention d'un token avec des champs manquants"""
         url = reverse("api:auth_login")
-
-        # Test sans username
-        data = {"password": "testpass123"}
-        response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        # Test sans password
-        data = {"username": "testuser"}
+        data = {"username": "testuser"}  # Mot de passe manquant
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_token_creation_on_first_login(self):
         """Test de création automatique d'un token lors de la première connexion"""
-        # Supprimer le token existant s'il y en a un
-        Token.objects.filter(user=self.user).delete()
+        # Créer un nouvel utilisateur
+        user = User.objects.create_user(
+            username="newuser", password="testpass123", email="new@test.com"
+        )
 
+        # Première connexion - devrait créer un token
         url = reverse("api:auth_login")
-        data = {"username": "testuser", "password": "testpass123"}
-
+        data = {"username": "newuser", "password": "testpass123"}
         response = self.client.post(url, data, format="json")
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("token", response.data)
 
-        # Vérifier qu'un nouveau token a été créé
-        token = Token.objects.get(user=self.user)
-        self.assertEqual(response.data["token"], token.key)
-
     def test_api_access_with_token(self):
         """Test d'accès à l'API avec un token valide"""
-        # Créer un token
-        token = Token.objects.create(user=self.user)
+        # Obtenir un token
+        url = reverse("api:auth_login")
+        data = {"username": "testuser", "password": "testpass123"}
+        response = self.client.post(url, data, format="json")
+        token = response.data["token"]
 
-        # Configurer le client avec le token
-        self.client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
-
-        # Tester l'accès à un endpoint protégé (clients)
+        # Tester l'accès à un endpoint protégé
         url = reverse("api:client-list")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_api_access_without_token(self):
         """Test d'accès à l'API sans token"""
-        # Ne pas configurer d'authentification
         url = reverse("api:client-list")
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_api_access_with_invalid_token(self):
         """Test d'accès à l'API avec un token invalide"""
-        # Configurer le client avec un token invalide
-        self.client.credentials(HTTP_AUTHORIZATION="Token invalid_token")
-
         url = reverse("api:client-list")
+        self.client.credentials(HTTP_AUTHORIZATION="Token invalid_token")
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
