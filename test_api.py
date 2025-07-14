@@ -6,6 +6,8 @@ Script de test pour l'API REST du mini-CRM
 import requests
 import json
 from datetime import datetime, timedelta
+import pytest
+import uuid
 
 # Configuration
 BASE_URL = "http://127.0.0.1:8000/api/v1"
@@ -64,10 +66,13 @@ def test_clients(token):
 
     headers = {**HEADERS, "Authorization": f"Token {token}"}
 
+    # Supprimer le client s'il existe déjà (évite l'erreur d'unicité)
+    requests.delete(f"{BASE_URL}/clients/?email=contact@test.com", headers=headers)
+
     # 1. Créer un client
     client_data = {
         "nom": "Entreprise Test",
-        "email": "contact@test.com",
+        "email": f"contact_{uuid.uuid4().hex[:8]}@test.com",  # email unique
         "telephone": "0123456789",
         "adresse": "123 Rue Test",
         "code_postal": "75001",
@@ -79,7 +84,21 @@ def test_clients(token):
     print_response(response, "Création d'un client")
 
     if response.status_code == 201:
-        client_id = response.json().get("id")
+        client_data = response.json()
+        # Récupérer l'ID depuis l'URL de la réponse ou depuis les headers
+        client_id = client_data.get("id")
+        if not client_id:
+            # Si pas d'ID dans la réponse, essayer de le récupérer depuis l'URL
+            location = response.headers.get("Location")
+            if location:
+                client_id = location.split("/")[-2]  # /api/v1/clients/12/ -> 12
+            else:
+                # Fallback : chercher le client par email
+                search_response = requests.get(f"{BASE_URL}/clients/?email={client_data['email']}", headers=headers)
+                if search_response.status_code == 200:
+                    results = search_response.json().get("results", [])
+                    if results:
+                        client_id = results[0].get("id")
 
         # 2. Récupérer la liste des clients
         response = requests.get(f"{BASE_URL}/clients/", headers=headers)
@@ -121,8 +140,15 @@ def test_projets(token, client_id):
     print_response(response, "Création d'un projet")
 
     if response.status_code == 201:
-        projet_id = response.json().get("id")
-
+        projet_data = response.json()
+        projet_id = projet_data.get("id")
+        if not projet_id:
+            # Fallback : chercher le projet par titre et client
+            search_response = requests.get(f"{BASE_URL}/projets/?client={client_id}&titre={projet_data['titre']}", headers=headers)
+            if search_response.status_code == 200:
+                results = search_response.json().get("results", [])
+                if results:
+                    projet_id = results[0].get("id")
         # 2. Récupérer la liste des projets
         response = requests.get(f"{BASE_URL}/projets/", headers=headers)
         print_response(response, "Liste des projets")
@@ -245,51 +271,37 @@ def test_pagination():
     print_response(response, "Page 2 des clients")
 
 
-def main():
-    """Fonction principale de test"""
-    print("🚀 DÉMARRAGE DES TESTS DE L'API REST")
-    print("=" * 60)
+@pytest.fixture(scope="session")
+def token():
+    t = test_authentication()
+    assert t is not None, "Échec de l'authentification, impossible d'obtenir un token."
+    return t
 
-    try:
-        # Test d'authentification
-        token = test_authentication()
-        if not token:
-            print("❌ Échec de l'authentification")
-            return
+@pytest.fixture(scope="session")
+def client_id(token):
+    cid = test_clients(token)
+    assert cid is not None, "Impossible de créer un client pour les tests."
+    return cid
 
-        # Test des clients
-        client_id = test_clients(token)
-        if not client_id:
-            print("❌ Échec des tests clients")
-            return
+@pytest.fixture(scope="session")
+def projet_id(token, client_id):
+    pid = test_projets(token, client_id)
+    assert pid is not None, "Impossible de créer un projet pour les tests."
+    return pid
 
-        # Test des projets
-        projet_id = test_projets(token, client_id)
-        if not projet_id:
-            print("❌ Échec des tests projets")
-            return
+# Adapter les tests pour utiliser les fixtures pytest
 
-        # Test des factures
-        facture_id = test_factures(token, client_id, projet_id)
-        if not facture_id:
-            print("❌ Échec des tests factures")
-            return
+def test_clients_api(token):
+    test_clients(token)
 
-        # Test des filtres et recherche
-        test_filtres_et_recherche(token)
+def test_projets_api(token, client_id):
+    test_projets(token, client_id)
 
-        # Test de la pagination
-        test_pagination()
+def test_factures_api(token, client_id, projet_id):
+    test_factures(token, client_id, projet_id)
 
-        print("\n✅ TOUS LES TESTS SONT TERMINÉS AVEC SUCCÈS !")
-        print("\n📚 Pour plus de tests, utilisez l'interface Swagger :")
-        print("   http://127.0.0.1:8000/api/v1/docs/")
-
-    except requests.exceptions.ConnectionError:
-        print("❌ Erreur de connexion. Assurez-vous que le serveur Django est démarré.")
-    except Exception as e:
-        print(f"❌ Erreur lors des tests : {str(e)}")
+def test_filtres_et_recherche_api(token):
+    test_filtres_et_recherche(token)
 
 
-if __name__ == "__main__":
-    main()
+
