@@ -86,7 +86,10 @@ class ClientCreateUpdateSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         """Validation personnalisée pour l'email"""
-        if Client.objects.filter(email=value).exists():
+        qs = Client.objects.filter(email=value)
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
             raise serializers.ValidationError("Un client avec cet email existe déjà.")
         return value
 

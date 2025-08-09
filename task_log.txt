@@ -535,3 +535,156 @@ Démarrage de la vérification des notifications...
 Vérification des notifications terminée avec succès
 12/07/2025 13:10:46,93 - Fin de la tÃ¢che 
  
+15/07/2025  2:31:16,25 - DÃ©marrage de la tÃ¢che 
+^C16/07/2025  0:44:36,53 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-15 22:44:37.750832+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+16/07/2025  0:44:37,81 - Fin de la tÃ¢che 
+ 
+17/07/2025  2:07:12,40 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-17 00:07:14.504430+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+17/07/2025  2:07:14,57 - Fin de la tÃ¢che 
+ 
+19/07/2025  0:35:51,26 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-18 22:35:52.721846+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+19/07/2025  0:35:52,76 - Fin de la tÃ¢che 
+ 
+19/07/2025 22:57:58,31 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-19 20:57:59.588238+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+19/07/2025 22:57:59,64 - Fin de la tÃ¢che 
+ 
+21/07/2025  2:26:10,60 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-21 00:26:12.156017+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+21/07/2025  2:26:12,22 - Fin de la tÃ¢che 
+ 
+21/07/2025 23:34:54,21 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-21 21:34:55.340520+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+21/07/2025 23:34:55,38 - Fin de la tÃ¢che 
+ 
+22/07/2025 15:42:11,56 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-22 13:42:14.264817+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+22/07/2025 15:42:14,35 - Fin de la tÃ¢che 
+ 
+24/07/2025  0:18:43,23 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-23 22:18:46.248474+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+24/07/2025  0:18:46,30 - Fin de la tÃ¢che 
+ 
+25/07/2025  1:08:24,70 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-24 23:08:25.965478+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+25/07/2025  1:08:26,03 - Fin de la tÃ¢che 
+ 
+25/07/2025 17:46:06,74 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-25 15:46:08.879286+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+25/07/2025 17:46:08,95 - Fin de la tÃ¢che 
+ 
+27/07/2025  0:37:16,41 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-26 22:37:17.873942+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+27/07/2025  0:37:17,93 - Fin de la tÃ¢che 
+ 
+28/07/2025  0:26:15,06 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-27 22:26:16.641395+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+28/07/2025  0:26:16,80 - Fin de la tÃ¢che 
+ 
+30/07/2025 21:52:05,13 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-30 19:52:07.457602+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+30/07/2025 21:52:07,51 - Fin de la tÃ¢che 
+ 
+31/07/2025 19:31:08,44 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-07-31 17:31:09.660438+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+31/07/2025 19:31:09,71 - Fin de la tÃ¢che 
+ 
+01/08/2025 16:29:31,66 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-08-01 14:29:32.891670+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+01/08/2025 16:29:32,94 - Fin de la tÃ¢che 
+ 
+02/08/2025 15:11:32,56 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-08-02 13:11:34.214378+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+02/08/2025 15:11:34,25 - Fin de la tÃ¢che 
+ 
+04/08/2025 22:46:55,39 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-08-04 20:46:57.217801+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+04/08/2025 22:46:57,27 - Fin de la tÃ¢che 
+ 
+05/08/2025 22:30:10,42 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-08-05 20:30:12.719962+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+05/08/2025 22:30:12,77 - Fin de la tÃ¢che 
+ 
+08/08/2025  1:32:03,85 - DÃ©marrage de la tÃ¢che 
+Démarrage des tâches à 2025-08-07 23:32:08.476240+00:00
+Démarrage de la relance des factures...
+Relance des factures terminée avec succès
+Démarrage de la vérification des notifications...
+Vérification des notifications terminée avec succès
+08/08/2025  1:32:08,65 - Fin de la tÃ¢che 
+ 

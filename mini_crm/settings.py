@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from logging.handlers import RotatingFileHandler  # noqa: F401 (used via LOGGING config)
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +30,9 @@ SECRET_KEY = os.environ.get(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+# Forcer DEBUG en contexte de tests pour éviter les redirections et durcir les tests
+if os.environ.get("TESTING") == "True":
+    DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -42,6 +47,9 @@ else:
         "mini-crm-lezi.onrender.com",
     ]
 
+
+# Charger les variables d'environnement depuis un fichier .env (dev)
+load_dotenv(BASE_DIR / ".env")
 
 # Application definition
 
@@ -65,6 +73,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
+    "django_filters",
     # Vos applications
     "mini_crm",
     "clients",
@@ -116,15 +125,15 @@ DATABASES = {
     }
 }
 
-# Utiliser PostgreSQL en production, SQLite en développement
-if os.environ.get("DATABASE_URL") and not DEBUG:
-    DATABASES["default"] = dj_database_url.parse(os.environ.get("DATABASE_URL"))
-elif os.environ.get("TESTING") == "True":
-    # Utiliser SQLite pour les tests
+# Priorité aux tests → SQLite en mémoire
+if os.environ.get("TESTING") == "True":
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": ":memory:",
     }
+# Utiliser DATABASE_URL si fourni (dev/prod) sinon la config par défaut reste SQLite
+elif os.environ.get("DATABASE_URL"):
+    DATABASES["default"] = dj_database_url.parse(os.environ.get("DATABASE_URL"))
 
 
 # Password validation
@@ -168,6 +177,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -190,9 +200,11 @@ ACCOUNT_EMAIL_VERIFICATION = os.environ.get("ACCOUNT_EMAIL_VERIFICATION", "none"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# Configuration de django-allauth
-ACCOUNT_LOGIN_METHODS = {"email"}
-ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+# Configuration de django-allauth (paramètres standardisés)
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = os.environ.get("ACCOUNT_EMAIL_VERIFICATION", "none")
 
 # Configuration Email
 EMAIL_BACKEND = os.environ.get(
@@ -239,6 +251,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "20/min",
+        "user": "60/min",
+    },
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
     "DEFAULT_FILTER_BACKENDS": [
@@ -274,8 +294,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
 ]
 
-# Configuration de sécurité pour la production
-if not DEBUG:
+# Configuration de sécurité pour la production (désactivée pendant les tests)
+if not DEBUG and os.environ.get("TESTING") != "True":
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SESSION_COOKIE_SECURE = True
@@ -303,14 +323,18 @@ LOGGING = {
     "handlers": {
         "file": {
             "level": "INFO",
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": os.path.join(BASE_DIR, "logs", "django.log"),
+            "maxBytes": 5 * 1024 * 1024,
+            "backupCount": 5,
             "formatter": "verbose",
         },
         "security_file": {
             "level": "WARNING",
-            "class": "logging.FileHandler",
+            "class": "logging.handlers.RotatingFileHandler",
             "filename": os.path.join(BASE_DIR, "logs", "security.log"),
+            "maxBytes": 5 * 1024 * 1024,
+            "backupCount": 5,
             "formatter": "verbose",
         },
     },
@@ -350,7 +374,7 @@ SPECTACULAR_SETTINGS = {
         {"name": "clients", "description": "Gestion des clients"},
         {"name": "factures", "description": "Gestion des factures"},
         {"name": "projets", "description": "Gestion des projets"},
-        {"name": "auth", "description": "Authentification"},
+        {"name": "authentification", "description": "Authentification"},
     ],
     "SECURITY": [{"Token": []}],
 }
