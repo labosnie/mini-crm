@@ -59,7 +59,7 @@ class Facture(models.Model):
     statut_paiement = models.CharField(
         max_length=20,
         choices=STATUT_CHOICES,
-        default="envoyee",
+        default="envoyée",
         help_text="Statut du paiement de la facture",
     )
 

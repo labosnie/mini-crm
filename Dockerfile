@@ -47,8 +47,14 @@ USER django
 # Exposer le port
 EXPOSE 8000
 
+# EntryPoint pour appliquer migrations/collectstatic avant lancement
+USER root
+RUN chmod +x scripts/entrypoint.sh && chown django:django scripts/entrypoint.sh
+USER django
+ENTRYPOINT ["bash", "scripts/entrypoint.sh"]
+
 # Commande par défaut
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "mini_crm.wsgi:application", "--bind", "0.0.0.0:8000"]
 
 # Créer le répertoire de logs avec les bonnes permissions
 RUN mkdir -p /app/logs && chown -R django:django /app/logs 

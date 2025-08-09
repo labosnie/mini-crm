@@ -200,7 +200,8 @@ class FactureViewSet(viewsets.ModelViewSet):
         factures_payees = Facture.objects.filter(statut_paiement="payée").count()
         factures_en_retard = Facture.objects.filter(statut_paiement="en_retard").count()
         factures_envoyees = Facture.objects.filter(statut_paiement="envoyée").count()
-        factures_en_attente = Facture.objects.filter(statut_paiement="envoyée").count()
+        # "en_attente" n'existe pas dans les choix actuels, on expose tout de même un alias utile
+        factures_en_attente = factures_envoyees
 
         # Calcul du montant total
         montant_total = sum(f.montant for f in Facture.objects.all())
